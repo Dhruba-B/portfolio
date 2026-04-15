@@ -65,13 +65,14 @@ export default function HeroSection() {
         <Box
             ref={ref}
             sx={{
-                minHeight: "120vh",
+                minHeight: { xs: "100vh", md: "120vh" },
                 display: "flex",
                 alignItems: "center",
                 px: { xs: 3, md: 8, lg: 16 },
+                py: { xs: 10, md: 0 },
                 position: "relative",
                 overflow: "hidden",
-                flexDirection: { xs: "column", md: "row", },
+                flexDirection: { xs: "column", md: "row" },
                 textAlign: { xs: "center", md: "left" },
             }}
             onMouseMove={(event) => {
@@ -132,14 +133,20 @@ export default function HeroSection() {
                     maxWidth: "1400px",
                     mx: "auto",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 10,
+                    alignItems: { xs: "center", md: "center" },
+                    justifyContent: { xs: "center", md: "space-between" },
+                    gap: { xs: 6, md: 10 },
                     flexDirection: { xs: "column", md: "row" },
                 }}
             >
                 {/* LEFT */}
-                <Box sx={{ maxWidth: 600 }}>
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxWidth: { xs: 560, md: 600 },
+                        mx: { xs: "auto", md: 0 },
+                    }}
+                >
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -262,7 +269,7 @@ export default function HeroSection() {
                                     border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
                                     background: alpha(theme.palette.background.paper, 0.6),
                                     textAlign: "left",
-                                    minWidth: 116,
+                                    minWidth: { xs: 150, sm: 170, md: 116 },
                                 }}
                             >
                                 <Typography sx={{ fontSize: "0.9rem", color: "text.primary", fontWeight: 700 }}>
