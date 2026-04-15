@@ -1,39 +1,103 @@
-import { Box, Typography, Button } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
-import { motion, useScroll, useTransform } from "framer-motion";
-import CodeIcon from "@mui/icons-material/Code";
-import StorageIcon from "@mui/icons-material/Storage";
-import MemoryIcon from "@mui/icons-material/Memory";
-import Face6 from "@mui/icons-material/Face6";
-import { useRef } from "react";
+import {
+    Box,
+    Typography,
+    Button,
+    Chip,
+    useTheme,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { useMemo, useRef } from "react";
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import Constellations from "../../components/constellations/Constellations";
+import portrait1 from "../../assets/images/potrait_1.png";
 
-export default function Hero() {
+export default function HeroSection() {
     const theme = useTheme();
     const ref = useRef(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const parallaxX = useSpring(mouseX, { stiffness: 40, damping: 16 });
+    const parallaxY = useSpring(mouseY, { stiffness: 40, damping: 16 });
+    const auroraDriftY = useTransform(parallaxY, [-10, 10], [-10, 10]);
 
-    const { scrollY } = useScroll();
+    const orbitalBodies = useMemo(
+        () => [
+            { id: "planet-a", size: 42, top: "14%", left: "22%", hue: "accent", moon: true },
+            { id: "planet-b", size: 30, top: "26%", left: "84%", hue: "primary", moon: false },
+            { id: "planet-c", size: 36, top: "72%", left: "80%", hue: "accent", moon: true },
+            { id: "planet-d", size: 26, top: "80%", left: "24%", hue: "primary", moon: false },
+        ],
+        []
+    );
+    const constellationNodes = useMemo(
+        () =>
+            Array.from({ length: 18 }, (_, i) => ({
+                id: i,
+                x: 8 + ((i * 31) % 82),
+                y: 10 + ((i * 37) % 76),
+                size: i % 3 === 0 ? 4 : 3,
+            })),
+        []
+    );
+    const quickMetrics = useMemo(
+        () => [
+            { label: "Experience", value: "3+ Years" },
+            { label: "Projects", value: "5+ Delivered" },
+            { label: "Delivery", value: "Frontend to Backend" },
+        ],
+        []
+    );
 
-    // PARALLAX LAYERS
-    const yBg = useTransform(scrollY, [0, 600], [0, 150]);
-    const yMid = useTransform(scrollY, [0, 600], [0, 80]);
-    const yFront = useTransform(scrollY, [0, 600], [0, 40]);
+    // ✅ SECTION-BASED SCROLL
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start start", "end start"], // was ["start end", "end start"]
+    });
+
+    // ✅ PARALLAX VALUES
+    const yBg = useTransform(scrollYProgress, [0, 1], [0, 200]); // fastest (background glow)
+    const scaleBg = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+    const yMid = useTransform(scrollYProgress, [0, 1], [0, 80]);  // aurora layer
+    const yFront = useTransform(scrollYProgress, [0, 1], [0, 40]);  // icons — slowest (visually closest)
+
 
     return (
         <Box
             ref={ref}
             sx={{
-                minHeight: "100vh",
+                minHeight: "120vh",
                 display: "flex",
                 alignItems: "center",
-
                 px: { xs: 3, md: 8, lg: 16 },
                 position: "relative",
                 overflow: "hidden",
+                flexDirection: { xs: "column", md: "row", },
                 textAlign: { xs: "center", md: "left" },
+            }}
+            onMouseMove={(event) => {
+                const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+                const nx = ((event.clientX - left) / width - 0.5) * 16;
+                const ny = ((event.clientY - top) / height - 0.5) * 16;
+                mouseX.set(nx);
+                mouseY.set(ny);
+            }}
+            onMouseLeave={() => {
+                mouseX.set(0);
+                mouseY.set(0);
             }}
         >
             {/* 🔥 BACKGROUND GLOW */}
-            <motion.div style={{ y: yBg }}>
+
+            <motion.div
+                style={{
+                    y: yBg,
+                    scale: scaleBg,
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 0,
+                    pointerEvents: "none",
+                }}
+            >
                 <Box
                     sx={{
                         position: "absolute",
@@ -51,150 +115,164 @@ export default function Hero() {
                 />
             </motion.div>
 
-            {/* 🔥 COMPUTER SYSTEM BACKGROUND */}
-            <motion.div style={{ y: yBg }}>
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: 0.12,
-                    }}
-                >
-                    {/* MONITOR FRAME */}
+            {/* STRUCTURED CONSTELLATION BACKGROUND */}
+            {/* <motion.div
+                style={{
+                    y: yMid,
+                    x: parallaxX,
+                    translateY: auroraDriftY,
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 1,
+                    pointerEvents: "none",
+                }}
+            >
+                {[0, 1, 2, 3, 4, 5].map((line) => (
                     <Box
+                        key={`mesh-line-${line}`}
                         sx={{
-                            width: { xs: 280, md: 600 },
-                            height: { xs: 180, md: 360 },
-                            borderRadius: 3,
-                            border: `1px solid ${theme.palette.primary.border}`,
-                            background: theme.palette.background.paper,
-                            position: "relative",
-                            overflow: "hidden",
+                            position: "absolute",
+                            top: `${12 + line * 13}%`,
+                            left: line % 2 === 0 ? "6%" : "48%",
+                            width: line % 2 === 0 ? "44%" : "38%",
+                            borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                            transform: `rotate(${line % 2 === 0 ? -10 : 8}deg)`,
+                            opacity: 0.55,
                         }}
-                    >
-                        <motion.div
-                            animate={{ y: ["0%", "100%"] }}
-                            transition={{
-                                duration: 6,
-                                repeat: Infinity,
-                                ease: "linear",
-                            }}
-                            style={{
-                                position: "absolute",
-                                left: 0,
-                                right: 0,
-                                height: 2,
-                                background: theme.palette.primary.main,
-                                opacity: 0.2,
-                            }}
-                        />
-                        {/* HEADER BAR */}
-                        <Box
-                            sx={{
-                                height: 32,
-                                borderBottom: `1px solid ${theme.palette.primary.border}`,
-                                display: "flex",
-                                alignItems: "center",
-                                px: 2,
-                                gap: 1,
-                            }}
-                        >
-                            <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "primary.main" }} />
-                            <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "secondary.main" }} />
-                            <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "text.secondary" }} />
-                        </Box>
-
-                        {/* FAKE CODE LINES */}
-                        <Box sx={{ p: 2 }}>
-                            {[...Array(6)].map((_, i) => (
-                                <motion.div
-                                    key={i}
-                                    animate={{ opacity: [0.3, 1, 0.3] }}
-                                    transition={{
-                                        duration: 2 + i,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            height: 8,
-                                            mb: 1.5,
-                                            borderRadius: 1,
-                                            width: `${60 + Math.random() * 30}%`,
-                                            background: `linear-gradient(90deg, ${theme.palette.primary.main}, transparent)`,
-                                        }}
-                                    />
-                                </motion.div>
-                            ))}
-                        </Box>
-                    </Box>
-                </Box>
-            </motion.div>
-
-            <motion.div style={{ y: yMid }}>
+                    />
+                ))}
+                {constellationNodes.map((node) => (
+                    <motion.div
+                        key={node.id}
+                        animate={{ opacity: [0.3, 0.95, 0.3], scale: [0.9, 1.2, 0.9] }}
+                        transition={{
+                            duration: 2.8 + (node.id % 5) * 0.4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                        style={{
+                            position: "absolute",
+                            left: `${node.x}%`,
+                            top: `${node.y}%`,
+                            width: node.size,
+                            height: node.size,
+                            borderRadius: "50%",
+                            background:
+                                node.id % 4 === 0
+                                    ? "rgba(192,132,252,0.95)"
+                                    : "rgba(224,231,255,0.86)",
+                            boxShadow:
+                                node.id % 4 === 0
+                                    ? "0 0 12px rgba(192,132,252,0.7)"
+                                    : "0 0 10px rgba(224,231,255,0.6)",
+                        }}
+                    />
+                ))}
                 <Box
                     sx={{
                         position: "absolute",
-                        top: "15%",
-                        right: "10%",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 6,
-                        opacity: 0.15,
+                        inset: "8% 6%",
+                        borderRadius: 8,
+                        border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+                        background: `linear-gradient(140deg, ${alpha(theme.palette.background.paper, 0.08)}, transparent)`,
                     }}
-                >
-                    {[CodeIcon, StorageIcon, MemoryIcon].map((Icon, i) => (
-                        <motion.div
-                            key={i}
-                            animate={{ y: [0, -20, 0] }}
-                            transition={{
-                                duration: 4 + i,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
-                        >
-                            <Icon sx={{ fontSize: 40 }} />
-                        </motion.div>
-                    ))}
-                </Box>
-            </motion.div>
+                />
+            </motion.div> */}
 
-            {/* MAIN CONTENT */}
+            <Constellations
+                yMid={yMid}
+                parallaxX={parallaxX}
+                auroraDriftY={auroraDriftY}
+            />
+
+
+            {/* 🧠 MAIN CONTENT */}
             <Box
                 sx={{
+                    position: "relative",
+                    zIndex: 5,
                     width: "100%",
                     maxWidth: "1400px",
                     mx: "auto",
-
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 10,
                 }}
             >
-                {/* 🔷 LEFT TEXT */}
+                {/* LEFT */}
                 <Box sx={{ maxWidth: 600 }}>
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
                     >
                         <Typography
-                            variant="overline"
-                            sx={{ color: "text.secondary" }}
+                            sx={{
+                                color: "text.primary",
+                                fontSize: "0.95rem",
+                                letterSpacing: "0.05em",
+                                mb: 0.4,
+                                fontWeight: 600,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 0.8,
+                            }}
                         >
-                            Full Stack Engineer • System Builder
+                            <Box
+                                component="span"
+                                sx={{
+                                    width: 7,
+                                    height: 7,
+                                    borderRadius: "50%",
+                                    background: alpha(theme.palette.accent.main, 0.95),
+                                    boxShadow: `0 0 12px ${alpha(theme.palette.accent.main, 0.7)}`,
+                                }}
+                            />
+                            <Box
+                                component="span"
+                                sx={{
+                                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent.main})`,
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                }}
+                            >
+                                Hi, I&apos;m Dhrubashis Basak
+                            </Box>
                         </Typography>
-                    </motion.div>
 
+                    </motion.div>
+                    <Typography variant="overline" sx={{ color: "text.secondary" }}>
+                        Full Stack Engineer • System Builder
+                    </Typography>
+                    {/* <Box
+                        sx={{
+                            my: 1,
+                            display: "flex",
+                            gap: 1,
+                            flexWrap: "wrap",
+                            justifyContent: { xs: "center", md: "flex-start" },
+                        }}
+                    >
+                        {["Healthcare", "Fintech", "AI Systems"].map((tag) => (
+                            <Chip
+                                key={tag}
+                                size="small"
+                                icon={<WorkspacePremiumIcon />}
+                                label={tag}
+                                variant="outlined"
+                                sx={{
+                                    borderColor: theme.palette.primary.border,
+                                    background: alpha(theme.palette.primary.main, 0.06),
+                                    p: 1,
+                                    fontSize: 12
+                                }}
+                            />
+                        ))}
+                    </Box> */}
                     <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.8 }}
+                        transition={{ delay: 0.1 }}
                     >
                         <Typography
                             variant="h2"
@@ -215,90 +293,196 @@ export default function Hero() {
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
+                        transition={{ delay: 0.2 }}
                     >
-                        <Typography
-                            sx={{
-                                mt: 3,
-                                color: "text.secondary",
-                                lineHeight: 1.8,
-                            }}
-                        >
-                            I design and build scalable healthcare, fintech,
-                            and AI-powered systems — from architecture to UI.
+                        <Typography sx={{ mt: 3, color: "text.secondary", lineHeight: 1.8 }}>
+                            I build complete product flows across the stack — from front-end UX to backend APIs, data design,
+                            and delivery workflows with clean version control practices.
                         </Typography>
                     </motion.div>
 
-                    {/* CTA */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        <Box sx={{ mt: 4, display: "flex", gap: 2 }}>
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    px: 4,
-                                    py: 1.2,
-                                    borderRadius: 3,
-                                }}
-                            >
-                                View Work
-                            </Button>
-
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    px: 4,
-                                    py: 1.2,
-                                    borderRadius: 3,
-                                    borderColor: "primary.border",
-                                }}
-                            >
-                                Contact
-                            </Button>
-                        </Box>
-                    </motion.div>
-                </Box>
-
-                {/* 🔷 RIGHT PROFILE */}
-                <motion.div style={{ y: yFront }}>
                     <Box
                         sx={{
-                            width: 320,
-                            height: 320,
-                            borderRadius: "50%",
-                            position: "relative",
-
-                            display: { xs: "none", md: "flex" },
-
-                            alignItems: "center",
-                            justifyContent: "center",
-
-                            background: alpha(theme.palette.primary.main, 0.1),
-                            border: `1px solid ${theme.palette.primary.border}`,
-
-                            boxShadow: `0 0 60px ${theme.palette.primary.glow}`,
+                            mt: 2.4,
+                            display: "flex",
+                            gap: 1.2,
+                            flexWrap: "wrap",
+                            justifyContent: { xs: "center", md: "flex-start" },
                         }}
                     >
-                        {/* Placeholder for your image */}
+                        {quickMetrics.map((metric) => (
+                            <Box
+                                key={metric.label}
+                                sx={{
+                                    px: 1.2,
+                                    py: 0.85,
+                                    borderRadius: 2,
+                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+                                    background: alpha(theme.palette.background.paper, 0.6),
+                                    textAlign: "left",
+                                    minWidth: 116,
+                                }}
+                            >
+                                <Typography sx={{ fontSize: "0.9rem", color: "text.primary", fontWeight: 700 }}>
+                                    {metric.value}
+                                </Typography>
+                                <Typography sx={{ fontSize: "0.68rem", color: "text.secondary", lineHeight: 1.1 }}>
+                                    {metric.label}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </Box>
+
+                    <Box sx={{ mt: 4, display: "flex", gap: 2, justifyContent: { xs: "center", md: "flex-start" }, }}>
+                        <Button variant="contained" href="#timeline-start">View Work</Button>
+                        <Button variant="outlined" href="tel:+919903859325">Contact</Button>
+                    </Box>
+                </Box>
+
+                {/* RIGHT */}
+                <motion.div style={{ y: yFront, position: "relative", zIndex: 6 }}>
+                    <Box
+                        sx={{
+                            width: { xs: 260, md: 340 },
+                            height: { xs: 260, md: 340 },
+                            borderRadius: "50%",
+                            display: { xs: "none", md: "flex" },
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: alpha(theme.palette.primary.main, 0.16),
+                            border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                            boxShadow: `0 0 90px ${alpha(theme.palette.primary.main, 0.3)}`,
+                            position: "relative",
+                        }}
+                    >
                         <Box
                             sx={{
-                                width: "85%",
-                                height: "85%",
+                                width: "75%",
+                                height: "75%",
                                 borderRadius: "50%",
                                 background: theme.palette.background.paper,
-
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-
-                                color: "text.secondary",
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.25)}`,
+                                boxShadow: `0 0 45px ${alpha(theme.palette.primary.main, 0.2)}`,
+                                overflow: "hidden",
                             }}
                         >
-                            <Face6 sx={{ fontSize: 120 }} />
+                            <Box
+                                component="img"
+                                src={portrait1}
+                                alt="Dhrubashis Basak portrait"
+                                sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                }}
+                            />
                         </Box>
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 34, repeat: Infinity, ease: "linear" }}
+                            style={{
+                                position: "absolute",
+                                width: "95%",
+                                height: "95%",
+                                borderRadius: "50%",
+                                border: `1px dashed ${alpha(theme.palette.primary.main, 0.2)}`,
+                            }}
+                        />
+                        {orbitalBodies.map((body, index) => (
+                            <motion.div
+                                key={body.id}
+                                animate={{ y: [0, -4, 0], x: [0, 2, 0] }}
+                                transition={{
+                                    duration: 10 + index * 1.4,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    top: body.top,
+                                    left: body.left,
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: body.size,
+                                        height: body.size,
+                                        borderRadius: "50%",
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.34)}`,
+                                        background:
+                                            body.hue === "accent"
+                                                ? `radial-gradient(circle at 30% 30%, ${alpha(theme.palette.accent.main, 0.95)} 0%, ${alpha(theme.palette.primary.main, 0.42)} 68%, ${alpha(theme.palette.primary.main, 0.16)} 100%)`
+                                                : `radial-gradient(circle at 35% 28%, ${alpha("#93c5fd", 0.95)} 0%, ${alpha(theme.palette.primary.main, 0.42)} 68%, ${alpha(theme.palette.primary.main, 0.16)} 100%)`,
+                                        boxShadow: `0 0 20px ${alpha(theme.palette.primary.main, 0.3)}`,
+                                        position: "relative",
+                                        "&::before": {
+                                            content: '""',
+                                            position: "absolute",
+                                            top: "22%",
+                                            left: "26%",
+                                            width: body.size * 0.18,
+                                            height: body.size * 0.18,
+                                            borderRadius: "50%",
+                                            background: "rgba(255,255,255,0.75)",
+                                            filter: "blur(0.5px)",
+                                        },
+                                    }}
+                                />
+                                {body.moon && (
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{
+                                            duration: 12 + index * 0.8,
+                                            repeat: Infinity,
+                                            ease: "linear",
+                                        }}
+                                        style={{
+                                            position: "absolute",
+                                            inset: -10,
+                                            borderRadius: "50%",
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                position: "absolute",
+                                                top: "8%",
+                                                left: "50%",
+                                                width: 7,
+                                                height: 7,
+                                                borderRadius: "50%",
+                                                background: alpha("#e2e8f0", 0.95),
+                                                boxShadow: `0 0 10px ${alpha("#e2e8f0", 0.75)}`,
+                                            }}
+                                        />
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        ))}
+                        {[0, 1, 2].map((star) => (
+                            <motion.div
+                                key={`hero-star-${star}`}
+                                animate={{ opacity: [0.25, 0.95, 0.25], scale: [0.85, 1.2, 0.85] }}
+                                transition={{
+                                    duration: 3.4 + star * 1.2,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    top: star === 0 ? "10%" : star === 1 ? "62%" : "86%",
+                                    left: star === 0 ? "58%" : star === 1 ? "12%" : "64%",
+                                    width: 4,
+                                    height: 4,
+                                    borderRadius: "50%",
+                                    background: "rgba(224,231,255,0.95)",
+                                    boxShadow: "0 0 10px rgba(224,231,255,0.75)",
+                                }}
+                            />
+                        ))}
                     </Box>
                 </motion.div>
             </Box>
