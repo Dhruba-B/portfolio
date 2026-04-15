@@ -116,69 +116,6 @@ export default function HeroSection() {
             </motion.div>
 
             {/* STRUCTURED CONSTELLATION BACKGROUND */}
-            {/* <motion.div
-                style={{
-                    y: yMid,
-                    x: parallaxX,
-                    translateY: auroraDriftY,
-                    position: "absolute",
-                    inset: 0,
-                    zIndex: 1,
-                    pointerEvents: "none",
-                }}
-            >
-                {[0, 1, 2, 3, 4, 5].map((line) => (
-                    <Box
-                        key={`mesh-line-${line}`}
-                        sx={{
-                            position: "absolute",
-                            top: `${12 + line * 13}%`,
-                            left: line % 2 === 0 ? "6%" : "48%",
-                            width: line % 2 === 0 ? "44%" : "38%",
-                            borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                            transform: `rotate(${line % 2 === 0 ? -10 : 8}deg)`,
-                            opacity: 0.55,
-                        }}
-                    />
-                ))}
-                {constellationNodes.map((node) => (
-                    <motion.div
-                        key={node.id}
-                        animate={{ opacity: [0.3, 0.95, 0.3], scale: [0.9, 1.2, 0.9] }}
-                        transition={{
-                            duration: 2.8 + (node.id % 5) * 0.4,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                        style={{
-                            position: "absolute",
-                            left: `${node.x}%`,
-                            top: `${node.y}%`,
-                            width: node.size,
-                            height: node.size,
-                            borderRadius: "50%",
-                            background:
-                                node.id % 4 === 0
-                                    ? "rgba(192,132,252,0.95)"
-                                    : "rgba(224,231,255,0.86)",
-                            boxShadow:
-                                node.id % 4 === 0
-                                    ? "0 0 12px rgba(192,132,252,0.7)"
-                                    : "0 0 10px rgba(224,231,255,0.6)",
-                        }}
-                    />
-                ))}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: "8% 6%",
-                        borderRadius: 8,
-                        border: `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
-                        background: `linear-gradient(140deg, ${alpha(theme.palette.background.paper, 0.08)}, transparent)`,
-                    }}
-                />
-            </motion.div> */}
-
             <Constellations
                 yMid={yMid}
                 parallaxX={parallaxX}
@@ -198,6 +135,7 @@ export default function HeroSection() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 10,
+                    flexDirection: { xs: "column", md: "row" },
                 }}
             >
                 {/* LEFT */}
@@ -282,11 +220,15 @@ export default function HeroSection() {
                                 background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent.main})`,
                                 WebkitBackgroundClip: "text",
                                 WebkitTextFillColor: "transparent",
+                                textAlign: { xs: "center", md: "left" },
+                                fontSize: { xs: "1.5rem", md: "3rem" },
                             }}
                         >
-                            Building Systems,
+                            UI to Architecture
                             <br />
-                            Not Just Interfaces
+                            Designing &amp; Engineering
+                            <br />
+                            Systems.
                         </Typography>
                     </motion.div>
 
@@ -295,7 +237,7 @@ export default function HeroSection() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <Typography sx={{ mt: 3, color: "text.secondary", lineHeight: 1.8 }}>
+                        <Typography sx={{ mt: 3, color: "text.secondary", lineHeight: 1.8, fontSize: { xs: ".8rem", md: "1rem" } }}>
                             I build complete product flows across the stack — from front-end UX to backend APIs, data design,
                             and delivery workflows with clean version control practices.
                         </Typography>
@@ -340,7 +282,7 @@ export default function HeroSection() {
                 </Box>
 
                 {/* RIGHT */}
-                <motion.div style={{ y: yFront, position: "relative", zIndex: 6 }}>
+                <motion.div style={{ y: yFront, position: "relative", zIndex: 6, display: { xs: "none", md: "flex" } }}>
                     <Box
                         sx={{
                             width: { xs: 260, md: 340 },
