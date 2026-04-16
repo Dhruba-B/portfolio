@@ -10,6 +10,12 @@ import { useMemo, useRef } from "react";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import Constellations from "../../components/constellations/Constellations";
 import portrait1 from "../../assets/images/potrait_1.png";
+import reactLogo from "../../assets/react.svg";
+import jsLogo from "../../assets/icons/js.jpg";
+import javaLogo from "../../assets/icons/java.jpg";
+import springLogo from "../../assets/icons/spring.png";
+import mysqlLogo from "../../assets/icons/mysql.svg";
+import gitLogo from "../../assets/icons/git.png";
 
 export default function HeroSection() {
     const theme = useTheme();

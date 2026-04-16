@@ -34,9 +34,9 @@ const data = [
         subtitle: "MEDePAL, MHCP - Healthcare Platforms",
         stack: ["React", "React Native", "Spring Boot", "MySQL"],
         highlights: [
-            "Architected config-driven forms; reduced hardcoded UI and sped up form rollout cycles.",
-            "Built UI-driven query generation with server-side SQL safety checks.",
-            "Integrated NL-to-SQL via LLM APIs for faster ad-hoc reporting.",
+            "Built and shipped production features across healthcare web and mobile platforms.",
+            "Worked across the full stack — from schema design to UI delivery.",
+            "Applied reusable architecture patterns to support multi-tenant scale.",
         ],
         icon: RocketLaunchIcon,
     },
@@ -47,9 +47,9 @@ const data = [
         subtitle: "Cross-platform caregiver and patient workflows",
         stack: ["React Native", "REST APIs", "Role-based UX"],
         highlights: [
-            "Delivered and maintained MEDePAL + MHCP React Native apps in production.",
-            "Built caregiver workflows: tasks, patient logs, and booking journeys.",
-            "Enabled white-label customization without duplicating core app logic.",
+            "Delivered MEDePAL + MHCP apps in production across many healthcare roles.",
+            "Built shift management, patient logs, and booking flows end-to-end.",
+            "Enabled white-label variants without forking core app logic.",
         ],
         icon: HealthAndSafetyIcon,
     },
@@ -60,9 +60,9 @@ const data = [
         subtitle: "Shared React + MUI design system",
         stack: ["React", "MUI", "Component Architecture"],
         highlights: [
-            "Refactored legacy screens into a reusable React + MUI component library.",
-            "Improved UI consistency and reduced duplication across modules.",
-            "Established scalable front-end standards for multi-tenant products.",
+            "Refactored legacy screens into a shared React + MUI component library.",
+            "Reduced duplication and enforced UI consistency across modules.",
+            "Set scalable front-end standards for multi-tenant products.",
         ],
         icon: WidgetsIcon,
     },
@@ -73,7 +73,7 @@ const data = [
         subtitle: "Java + Spring Batch in regulated production",
         stack: ["Java", "Spring Batch", "Enterprise Processes"],
         highlights: [
-            "Contributed to recompilation workflows for trade/ledger settlement cycles.",
+            "Contributed to trade and ledger settlement recompilation workflows.",
             "Worked on tenant-isolated processing with client-specific configurations.",
             "Delivered under fintech-grade compliance and enterprise review pipelines.",
         ],
@@ -87,8 +87,8 @@ const data = [
         subtitle: "Natural language to validated SQL",
         stack: ["LLM APIs", "SQL Validation", "React", "Spring Boot"],
         highlights: [
-            "Converted natural language prompts into executable SQL with controlled LLM integration.",
-            "Blocked destructive/schema-violating queries through backend validation.",
+            "Converted natural language prompts into executable SQL via controlled LLM integration.",
+            "Blocked destructive and schema-violating queries through backend validation.",
         ],
         caseStudy: {
             title: "NL to SQL Query Builder",
@@ -99,16 +99,16 @@ const data = [
     },
     {
         id: "key-projects-mobile-and-fintech",
-        title: "Key Projects: Web + Native Apps Delivery",
+        title: "White-label Mobile Delivery",
         period: "MAMATA, Nursing App, Nomura Platform",
-        subtitle: "Production apps with white-label and compliance constraints",
+        subtitle: "Client-specific variants from a shared core",
         stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
         highlights: [
             "Built MAMATA as a white-label MEDePAL variant with client-specific modules.",
-            "Delivered caregiver mobile flows for shifts, logs, and real-time updates.",
+            "Adapted core app into branded variants via configuration — no logic duplication.",
         ],
         caseStudy: {
-            title: "White-label Mobile Delivery",
+            title: "White-labeled product Delivery",
             summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
             images: [medepal_1, medepal_2, medepal_3],
         },
@@ -118,9 +118,9 @@ const data = [
         id: "key-project-dynamic-forms",
         title: "Dynamic Form Engine",
         feature: true,
-        period: "React + MUI + Spring Boot + MySQL",
+        period: "Schema-driven + Validations + DB Mapping",
         subtitle: "Configuration as data, not code",
-        stack: ["Schema-driven UI", "Validation Rules", "DB Mapping"],
+        stack: ["React", "Validation Rules", "DB Mapping"],
         highlights: [
             "Moved field types, validations, and DB mappings into backend configuration.",
             "Enabled new form types without frontend release dependency.",
@@ -131,19 +131,6 @@ const data = [
             images: [formImage, widget_1, widget_2],
         },
         icon: SchemaTwoToneIcon,
-    },
-    {
-        id: "impact",
-        title: "Delivery Impact",
-        period: "Healthcare + Fintech",
-        subtitle: "From architecture to UI and production reliability",
-        stack: ["System Design", "API Engineering", "Product Execution"],
-        highlights: [
-            "Delivered 5+ modules/projects across frontend, backend, mobile, and data flows.",
-            "Balanced delivery speed with enterprise reliability and compliance expectations.",
-            "Applied reusable architecture patterns to support long-term scale.",
-        ],
-        icon: InsightsIcon,
     },
 ];
 
