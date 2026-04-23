@@ -3,11 +3,11 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import reactLogo from "../../assets/react.svg";
-import jsLogo from "../../assets/icons/js.svg";
+import jsLogo from "../../assets/icons/js.png";
 import ngrokLogo from "../../assets/icons/ngrok.png";
 import javaLogo from "../../assets/icons/java.svg";
-import springLogo from "../../assets/icons/spring.svg";
-import mysqlLogo from "../../assets/icons/mysql.svg";
+import springLogo from "../../assets/icons/spring.png";
+import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.png";
 
 const skillGroups = [

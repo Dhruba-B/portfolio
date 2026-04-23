@@ -4,10 +4,10 @@ import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from
 import { useEffect, useRef, useState } from "react";
 import AdsClickIcon from "@mui/icons-material/AdsClick";
 import reactLogo from "../../assets/react.svg";
-import jsLogo from "../../assets/icons/js.svg";
+import jsLogo from "../../assets/icons/js.webp";
 import javaLogo from "../../assets/icons/java.svg";
-import springLogo from "../../assets/icons/spring.svg";
-import mysqlLogo from "../../assets/icons/mysql.svg";
+import springLogo from "../../assets/icons/spring.png";
+import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.svg";
 import CosmicIconVisual from "./CosmicVisual";
 

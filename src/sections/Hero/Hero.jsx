@@ -14,7 +14,7 @@ import reactLogo from "../../assets/react.svg";
 import jsLogo from "../../assets/icons/js.jpg";
 import javaLogo from "../../assets/icons/java.jpg";
 import springLogo from "../../assets/icons/spring.png";
-import mysqlLogo from "../../assets/icons/mysql.svg";
+import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.png";
 
 export default function HeroSection() {
@@ -28,8 +28,8 @@ export default function HeroSection() {
 
     const orbitalBodies = useMemo(
         () => [
-            { id: "planet-a", size: 42, top: "14%", left: "22%", hue: "accent", moon: true },
-            { id: "planet-b", size: 30, top: "26%", left: "84%", hue: "primary", moon: false },
+            { id: "planet-a", size: 12, top: "14%", left: "10%", hue: "accent", moon: false },
+            { id: "planet-b", size: 40, top: "26%", left: "84%", hue: "primary", moon: false },
             { id: "planet-c", size: 36, top: "72%", left: "80%", hue: "accent", moon: true },
             { id: "planet-d", size: 26, top: "80%", left: "24%", hue: "primary", moon: false },
         ],
