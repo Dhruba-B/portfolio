@@ -1,7 +1,7 @@
 import { Box, Chip, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { motion, useAnimation, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import reactLogo from "../../assets/react.svg";
 import jsLogo from "../../assets/icons/js.svg";
 import ngrokLogo from "../../assets/icons/ngrok.png";
@@ -15,7 +15,7 @@ const skillGroups = [
     title: "Frontend",
     spotlight: [{ name: "React + React Native", logo: reactLogo }],
     summary:
-      "Builds scalable, component-driven interfaces with responsive architecture, reusable UI patterns, and performance-focused rendering across web and mobile.",
+      "Build scalable, component-driven interfaces with responsive architecture, reusable UI patterns, and performance-focused rendering across web and mobile.",
     skills: ["Material UI (MUI)", "JavaScript ES6+", "Responsive UI", "State Management", "Design Systems"],
     accentColor: "#61DAFB",
   },
@@ -26,7 +26,7 @@ const skillGroups = [
       { name: "Java", logo: javaLogo },
     ],
     summary:
-      "Designs secure, production-grade backend services with REST API contracts, modular service boundaries, and multi-tenant controls for configurable delivery.",
+      "Design secure, production-grade backend services with REST API contracts, modular service boundaries, and multi-tenant controls for configurable delivery.",
     skills: ["REST APIs", "JPQL", "Native SQL", "Multi-tenant Architecture", "DTO-first APIs"],
     accentColor: "#6DB33F",
   },
@@ -34,7 +34,7 @@ const skillGroups = [
     title: "Database",
     spotlight: [{ name: "MySQL", logo: mysqlLogo }],
     summary:
-      "Implements schema design and query optimization strategies for reliable transactional workflows, high-read reporting, and maintainable relational models.",
+      "Implemented schema design and query optimization strategies for reliable transactional workflows, high-read reporting, and maintainable relational models.",
     skills: ["Schema Design", "Query Optimisation", "Indexing Strategy", "Data Modeling"],
     accentColor: "#61DAFB",
   },
@@ -45,7 +45,7 @@ const skillGroups = [
       { name: "Spring Boot", logo: springLogo },
     ],
     summary:
-      "Integrates LLM APIs into user workflows to convert natural-language prompts into validated outputs with safety checks, schema guards, and operational reliability.",
+      "Integrated LLM APIs into user workflows to convert natural-language prompts into validated outputs with safety checks, schema guards, and operational reliability.",
     skills: ["LLM API Integration", "Natural Language to SQL", "Prompt Engineering", "Validation Pipelines"],
     accentColor: "#A78BFA",
   },
@@ -56,204 +56,119 @@ const skillGroups = [
       { name: "Ngrok", logo: ngrokLogo },
     ],
     summary:
-      "Executes disciplined delivery workflows with version control, API validation, integration testing support, and repeatable release readiness for client environments.",
+      "Executed disciplined delivery workflows with version control, API validation, integration testing support, and repeatable release readiness for client environments.",
     skills: ["Selenium (Python)", "Ngrok", "White-label Deployment", "Release Workflow", "Code Review Standards"],
     accentColor: "#F97316",
   },
 ];
 
-// Floating animation variants for logos
-const floatVariants = {
-  animate: (i) => ({
-    y: [0, -6, 0, 4, 0],
-    rotate: [0, i % 2 === 0 ? 4 : -4, 0, i % 2 === 0 ? -2 : 2, 0],
-    transition: {
-      duration: 3.5 + i * 0.7,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay: i * 0.4,
-    },
-  }),
-};
-
-// Orbit animation for multi-logo groups
-const orbitVariants = (index, total, accentColor) => ({
-  animate: {
-    rotate: [0, 360],
-    transition: {
-      duration: 10 + index * 3,
-      repeat: Infinity,
-      ease: "linear",
-      delay: index * 1.2,
-    },
-  },
-});
-
+// ─── LogoOrb ──────────────────────────────────────────────────────────────────
+// Clean float per orb — no tilt, no per-frame position tracking.
+// Each orb uses a fixed float amplitude and duration derived from its index.
 function LogoOrb({ item, index, total, accentColor, isHovered }) {
-  const theme = useTheme();
+  const floatDuration = 3.2 + index * 0.9;
+  const floatY = total === 1 ? [-5, 0, -5] : [-4, 2, -4];
+  const orbSize = total === 1 ? 52 : 46;
+  const imgSize = total === 1 ? 30 : 24;
 
-  // For single logo — centered floating orb
-  if (total === 1) {
-    return (
-      <motion.div
-        custom={index}
-        variants={floatVariants}
-        animate="animate"
-        style={{
+  return (
+    <motion.div
+      animate={{ y: floatY }}
+      transition={{
+        duration: floatDuration,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: index * 0.5,
+      }}
+      whileHover={{ scale: 1.14 }}
+      // Spring only for the scale micro-interaction, nothing else
+      style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Box
+        sx={{
+          width: orbSize,
+          height: orbSize,
+          borderRadius: "50%",
+          background: `radial-gradient(circle at 32% 32%,
+                        ${alpha(accentColor, 0.28)} 0%,
+                        ${alpha(accentColor, 0.07)} 100%
+                    )`,
+          border: `1.5px solid ${alpha(accentColor, isHovered ? 0.55 : 0.32)}`,
+          boxShadow: isHovered
+            ? `0 0 20px ${alpha(accentColor, 0.45)}`
+            : `0 0 10px ${alpha(accentColor, 0.16)}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          position: "relative",
+          overflow: "hidden",
+          transition: "border-color 0.35s ease, box-shadow 0.35s ease",
+          cursor: "default",
         }}
       >
-        <motion.div
-          whileHover={{ scale: 1.18, rotate: 8 }}
-          whileTap={{ scale: 0.92 }}
-          transition={{ type: "spring", stiffness: 300, damping: 18 }}
-          style={{
-            width: 50,
-            height: 50,
+        {/* Single slow-rotating dashed ring — CSS via sx, no framer */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 4,
             borderRadius: "50%",
-            background: `radial-gradient(circle at 30% 30%, ${alpha(accentColor, 0.28)} 0%, ${alpha(accentColor, 0.08)} 100%)`,
-            border: `1.5px solid ${alpha(accentColor, 0.45)}`,
-            boxShadow: isHovered
-              ? `0 0 24px ${alpha(accentColor, 0.55)}, 0 0 6px ${alpha(accentColor, 0.3)}`
-              : `0 0 12px ${alpha(accentColor, 0.22)}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            transition: "box-shadow 0.3s ease",
-            position: "relative",
-            overflow: "hidden",
+            border: `1px dashed ${alpha(accentColor, 0.28)}`,
+            animation: `orbRing${index % 2 === 0 ? "Cw" : "Ccw"} ${18 + index * 4}s linear infinite`,
+            "@keyframes orbRingCw": { to: { transform: "rotate(360deg)" } },
+            "@keyframes orbRingCcw": { to: { transform: "rotate(-360deg)" } },
           }}
-        >
-          {/* Inner shimmer ring */}
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
-            style={{
-              position: "absolute",
-              inset: 2,
-              borderRadius: "50%",
-              border: `1px dashed ${alpha(accentColor, 0.3)}`,
-            }}
-          />
-          <img
-            src={item.logo}
-            alt={item.name}
-            style={{
-              width: 30,
-              height: 30,
-              objectFit: "contain",
-              borderRadius: 4,
-              position: "relative",
-              zIndex: 1,
-            }}
-          />
-        </motion.div>
-      </motion.div>
-    );
-  }
-
-  // For multiple logos — side-by-side with staggered float
-  return (
-    <motion.div
-      custom={index}
-      variants={floatVariants}
-      animate="animate"
-      whileHover={{ scale: 1.15, rotate: index % 2 === 0 ? 6 : -6 }}
-      whileTap={{ scale: 0.9 }}
-      transition={{ type: "spring", stiffness: 280, damping: 20 }}
-      style={{
-        width: 45,
-        height: 45,
-        borderRadius: "50%",
-        background: `radial-gradient(circle at 35% 28%, ${alpha(accentColor, 0.3)} 0%, ${alpha(accentColor, 0.07)} 100%)`,
-        border: `1.5px solid ${alpha(accentColor, 0.4)}`,
-        boxShadow: isHovered
-          ? `0 0 20px ${alpha(accentColor, 0.5)}, 0 0 5px ${alpha(accentColor, 0.25)}`
-          : `0 0 10px ${alpha(accentColor, 0.18)}`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        transition: "box-shadow 0.3s ease",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <motion.div
-        animate={{ rotate: [0, -360] }}
-        transition={{ duration: 24 + index * 2, repeat: Infinity, ease: "linear" }}
-        style={{
-          position: "absolute",
-          inset: 3,
-          borderRadius: "50%",
-          border: `1px dashed ${alpha(accentColor, 0.25)}`,
-        }}
-      />
-      <img
-        src={item.logo}
-        alt={item.name}
-        style={{
-          width: 24,
-          height: 24,
-          objectFit: "contain",
-          borderRadius: 3,
-          position: "relative",
-          zIndex: 1,
-        }}
-      />
+        />
+        <img
+          src={item.logo}
+          alt={item.name}
+          style={{
+            width: imgSize,
+            height: imgSize,
+            objectFit: "contain",
+            borderRadius: 3,
+            position: "relative",
+            zIndex: 1,
+          }}
+        />
+      </Box>
     </motion.div>
   );
 }
 
+// ─── Card ─────────────────────────────────────────────────────────────────────
+// Hover: simple y lift + border glow. No tilt, no 3D transform, no mouse tracking.
 const cardVariants = {
-  hidden: { opacity: 0, y: 28, scale: 0.97 },
+  hidden: { opacity: 0, y: 24 },
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-    },
+    transition: { delay: i * 0.09, duration: 0.48, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
 const chipVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.82 },
   visible: (i) => ({
     opacity: 1,
     scale: 1,
-    transition: { delay: 0.3 + i * 0.05, type: "spring", stiffness: 320, damping: 22 },
+    transition: { delay: 0.28 + i * 0.045, type: "spring", stiffness: 300, damping: 24 },
   }),
 };
 
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function TechCredibilityPanel() {
   const theme = useTheme();
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
-
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      const x = event.clientX / window.innerWidth;
-      const y = event.clientY / window.innerHeight;
-      setMousePosition({ x, y });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   return (
     <Box sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 8, md: 10 } }}>
       <Box sx={{ maxWidth: 1180, mx: "auto", textAlign: "left" }}>
+
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.48 }}
         >
           <Typography variant="overline" sx={{ letterSpacing: "0.09em", color: "text.secondary" }}>
             Tech Credibility
@@ -261,9 +176,7 @@ export default function TechCredibilityPanel() {
           <Typography
             variant="h4"
             sx={{
-              mt: 0.8,
-              mb: 1.4,
-              fontWeight: 700,
+              mt: 0.8, mb: 1.4, fontWeight: 700,
               background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent.main})`,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -272,11 +185,12 @@ export default function TechCredibilityPanel() {
             Core Strengths Across Product Delivery
           </Typography>
           <Typography sx={{ mb: 3, color: "text.secondary", maxWidth: 860 }}>
-            Production-focused capability coverage across frontend engineering, backend services, database systems,
-            AI-assisted features, and release tooling.
+            Production-focused capability coverage across frontend engineering, backend services, database
+            systems, AI-assisted features, and release tooling.
           </Typography>
         </motion.div>
 
+        {/* Grid */}
         <Box
           sx={{
             display: "grid",
@@ -284,74 +198,57 @@ export default function TechCredibilityPanel() {
             gap: 2,
           }}
         >
-          {skillGroups.map((group, groupIndex) => {
-            const horizontalDirection = groupIndex % 2 === 0 ? 1 : -1;
-            const verticalDirection = groupIndex < 2 ? 1 : -1;
-            // Invert sign so the movement direction matches cursor intent.
-            const mouseOffsetX = (0.5 - mousePosition.x) * 12 * horizontalDirection;
-            const mouseOffsetY = (0.5 - mousePosition.y) * 9 * verticalDirection;
-            const mouseRotateY = (0.5 - mousePosition.x) * 8 * horizontalDirection;
-            const mouseRotateX = (0.5 - mousePosition.y) * 6;
-
-            return (
+          {skillGroups.map((group, groupIndex) => (
             <motion.div
               key={group.title}
               custom={groupIndex}
               variants={cardVariants}
               initial="hidden"
-              animate="visible"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
               onHoverStart={() => setHoveredCard(group.title)}
               onHoverEnd={() => setHoveredCard(null)}
-              whileHover={{
-                y: -4,
-                scale: 1.012,
-                boxShadow: `0 12px 30px ${alpha(group.accentColor, 0.18)}`,
-              }}
-              style={{
-                x: mouseOffsetX,
-                y: mouseOffsetY,
-                rotateY: mouseRotateY,
-                rotateX: mouseRotateX,
-                transformPerspective: 900,
-                transformStyle: "preserve-3d",
-              }}
-              transition={{ type: "spring", stiffness: 120, damping: 18, mass: 0.7 }}
+              // Only lift on hover — no tilt, no 3D, no mouse tracking
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 200, damping: 26 }}
+              style={{ height: "100%" }}
             >
               <Box
                 sx={{
                   p: { xs: 2.2, md: 2.6 },
                   borderRadius: 3,
                   border: `1px solid ${hoveredCard === group.title
-                      ? alpha(group.accentColor, 0.45)
-                      : alpha(theme.palette.primary.main, 0.2)
+                      ? alpha(group.accentColor, 0.42)
+                      : alpha(theme.palette.primary.main, 0.18)
                     }`,
                   background: alpha(theme.palette.background.paper, 0.72),
                   backdropFilter: "blur(8px)",
+                  boxShadow: hoveredCard === group.title
+                    ? `0 8px 28px ${alpha(group.accentColor, 0.13)}`
+                    : "none",
                   display: "grid",
                   gap: 1.6,
-                  transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-                  boxShadow:
-                    hoveredCard === group.title
-                      ? `0 8px 32px ${alpha(group.accentColor, 0.14)}`
-                      : "none",
+                  transition: "border-color 0.35s ease, box-shadow 0.35s ease",
                   height: "100%",
                 }}
               >
                 {/* Title row */}
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <Typography sx={{ fontWeight: 700, color: "text.primary" }}>{group.title}</Typography>
-                  {/* Tiny pulse dot */}
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.6, 1, 0.6],
-                    }}
-                    transition={{ duration: 2.2, repeat: Infinity, delay: groupIndex * 0.3 }}
-                    style={{
-                      width: 7,
-                      height: 7,
+                  <Typography sx={{ fontWeight: 700, color: "text.primary" }}>
+                    {group.title}
+                  </Typography>
+                  {/* Pulse dot — CSS animation, no framer */}
+                  <Box
+                    sx={{
+                      width: 7, height: 7,
                       borderRadius: "50%",
                       background: group.accentColor,
+                      animation: "pulseDot 2.4s ease-in-out infinite",
+                      animationDelay: `${groupIndex * 0.3}s`,
+                      "@keyframes pulseDot": {
+                        "0%, 100%": { transform: "scale(1)", opacity: 0.55 },
+                        "50%": { transform: "scale(1.6)", opacity: 1 },
+                      },
                     }}
                   />
                 </Box>
@@ -361,14 +258,14 @@ export default function TechCredibilityPanel() {
                   sx={{
                     p: { xs: 1.6, md: 1.8 },
                     borderRadius: 2.5,
-                    background: alpha(group.accentColor, 0.06),
-                    border: `1px solid ${alpha(group.accentColor, 0.18)}`,
+                    background: alpha(group.accentColor, 0.05),
+                    border: `1px solid ${alpha(group.accentColor, 0.16)}`,
                     display: "flex",
                     gap: 2,
                     alignItems: "flex-start",
                   }}
                 >
-                  {/* Logos cluster */}
+                  {/* Logos */}
                   <Box
                     sx={{
                       display: "flex",
@@ -418,21 +315,21 @@ export default function TechCredibilityPanel() {
                       custom={skillIndex}
                       variants={chipVariants}
                       initial="hidden"
-                      animate="visible"
-                      whileHover={{ scale: 1.08, y: -1 }}
-                      transition={{ type: "spring", stiffness: 340, damping: 18 }}
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      whileHover={{ scale: 1.06, y: -1 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
                     >
                       <Chip
                         label={skill}
                         size="small"
                         variant="outlined"
                         sx={{
-                          borderColor:
-                            hoveredCard === group.title
-                              ? alpha(group.accentColor, 0.55)
-                              : theme.palette.primary.border,
+                          borderColor: hoveredCard === group.title
+                            ? alpha(group.accentColor, 0.5)
+                            : theme.palette.primary.border,
                           color: "text.secondary",
-                          background: alpha(group.accentColor, 0.07),
+                          background: alpha(group.accentColor, 0.06),
                           transition: "border-color 0.3s ease, background 0.3s ease",
                           "& .MuiChip-label": {
                             px: { xs: 1, md: 1.2 },
@@ -446,8 +343,7 @@ export default function TechCredibilityPanel() {
                 </Box>
               </Box>
             </motion.div>
-            );
-          })}
+          ))}
         </Box>
       </Box>
     </Box>

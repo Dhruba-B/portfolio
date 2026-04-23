@@ -5,12 +5,6 @@ import { alpha, useTheme } from "@mui/material";
 
 export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
     const theme = useTheme();
-    const accentStrong = alpha(theme.palette.accent.main, 0.9);
-    const accentMid = alpha(theme.palette.accent.main, 0.3);
-    const accentSoft = alpha(theme.palette.accent.main, 0);
-    const starStrong = alpha(theme.palette.primary.main, 0.85);
-    const starMid = alpha(theme.palette.primary.main, 0.25);
-    const starSoft = alpha(theme.palette.primary.main, 0);
 
     function seededRandom(seed) {
         const x = Math.sin(seed + 1) * 10000;
@@ -20,12 +14,13 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
     function generateConstellation(count = 10) {
         const nodes = Array.from({ length: count }, (_, i) => ({
             id: i,
-            x: 40 + seededRandom(i * 3) * 920,      // 40–960 px range
-            y: 30 + seededRandom(i * 3 + 1) * 540,  // 30–570 px range
-            size: i % 4 === 0 ? 6 : 2 + seededRandom(i * 3 + 2) * 3,
+            x: 40 + seededRandom(i * 3) * 920,
+            y: 30 + seededRandom(i * 3 + 1) * 540,
+            // Small pinprick sizes: accent nodes slightly larger but still tiny
+            size: i % 4 === 0 ? 3.6 : 1.8 + seededRandom(i * 3 + 2) * 0.7,
             isPurple: i % 4 === 0,
-            duration: 2.6 + seededRandom(i * 7) * 2.2,
-            delay: -(seededRandom(i * 11) * 2.4),
+            duration: 4 + seededRandom(i * 7) * 3,       // slower, calmer pulse
+            delay: -(seededRandom(i * 11) * 3),
         }));
 
         const edges = [];
@@ -69,26 +64,13 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                 viewBox="0 0 1000 600"
                 preserveAspectRatio="xMidYMid slice"
             >
-                <defs>
-                    <radialGradient id="glow-purple" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor={accentStrong} />
-                        <stop offset="40%" stopColor={accentMid} />
-                        <stop offset="100%" stopColor={accentSoft} />
-                    </radialGradient>
-                    <radialGradient id="glow-white" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor={starStrong} />
-                        <stop offset="35%" stopColor={starMid} />
-                        <stop offset="100%" stopColor={starSoft} />
-                    </radialGradient>
-                </defs>
-
-                {/* Edges */}
+                {/* Edges — very faint, barely-there lines */}
                 {edges.map(([a, b]) => {
                     const na = nodes[a];
                     const nb = nodes[b];
                     const edgeSeed = a * 31 + b;
-                    const dur = 3.5 + seededRandom(edgeSeed) * 1.8;
-                    const del = -(seededRandom(edgeSeed + 7) * 2);
+                    const dur = 5 + seededRandom(edgeSeed) * 3;
+                    const del = -(seededRandom(edgeSeed + 7) * 3);
                     return (
                         <motion.line
                             key={`${a}-${b}`}
@@ -96,9 +78,9 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                             y1={na.y}
                             x2={nb.x}
                             y2={nb.y}
-                            stroke={alpha(theme.palette.primary.main, 0.55)}
-                            strokeWidth="1.5"
-                            animate={{ opacity: [0.06, 0.28, 0.06] }}
+                            stroke={alpha(theme.palette.primary.main, 1)}
+                            strokeWidth="0.6"
+                            animate={{ opacity: [0.03, 0.14, 0.03] }}
                             transition={{
                                 duration: dur,
                                 delay: del,
@@ -109,42 +91,21 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                     );
                 })}
 
-                {/* Glow halos */}
-                {nodes.map((node) => (
-                    <motion.ellipse
-                        key={`halo-${node.id}`}
-                        cx={node.x}
-                        cy={node.y}
-                        rx={node.isPurple ? 45 : 28}
-                        ry={node.isPurple ? 45 : 28}
-                        fill={node.isPurple ? "url(#glow-purple)" : "url(#glow-white)"}
-                        animate={{
-                            opacity: node.isPurple ? [0.2, 0.65, 0.2] : [0.15, 0.5, 0.15],
-                        }}
-                        transition={{
-                            duration: node.duration,
-                            delay: node.delay,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                    />
-                ))}
-
-                {/* Star cores */}
+                {/* Star cores — tiny pinpricks with a gentle twinkle */}
                 {nodes.map((node) => (
                     <motion.circle
                         key={`star-${node.id}`}
                         cx={node.x}
                         cy={node.y}
-                        r={node.size * 4}
+                        r={node.size}
                         fill={
                             node.isPurple
-                                ? alpha(theme.palette.accent.main, 0.95)
-                                : alpha(theme.palette.primary.main, 0.88)
+                                ? alpha(theme.palette.accent.main, 0.75)
+                                : alpha(theme.palette.primary.main, 0.7)
                         }
                         animate={{
-                            opacity: [0.35, 1, 0.35],
-                            r: [node.size * 3.2, node.size * 4.8, node.size * 3.2],  
+                            opacity: [0.3, 0.75, 0.3],
+                            r: [node.size * 0.85, node.size * 1.15, node.size * 0.85],
                         }}
                         transition={{
                             duration: node.duration,

@@ -9,321 +9,7 @@ import javaLogo from "../../assets/icons/java.svg";
 import springLogo from "../../assets/icons/spring.svg";
 import mysqlLogo from "../../assets/icons/mysql.svg";
 import gitLogo from "../../assets/icons/git.svg";
-
-// ─── Cosmic Icon Visual ───────────────────────────────────────────────────────
-// Fully replaces TimelineVisual with a self-contained celestial orb scene
-function CosmicIconVisual({ Icon, index, feature, parallaxX, parallaxY }) {
-    const theme = useTheme();
-    const isSmallDevice = useMediaQuery(theme.breakpoints.down("sm"));
-    const [hovered, setHovered] = useState(false);
-
-    // Deterministic randomness per index so each item feels unique
-    const seed = (index * 137.508) % 360;
-    const hue1 = seed;
-    const hue2 = (seed + 60) % 360;
-    const hue3 = (seed + 140) % 360;
-
-    const orbitals = [
-        { r: 68,  size: 7,  duration: 7.2,  delay: 0,    opacity: 0.85 },
-        { r: 92,  size: 5,  duration: 11.5, delay: -3.1, opacity: 0.65 },
-        { r: 116, size: 4,  duration: 17.0, delay: -6.4, opacity: 0.50 },
-        { r: 82,  size: 3,  duration: 9.0,  delay: -4.5, opacity: 0.40 },
-    ];
-
-    // Floating star positions — stable across renders
-    const stars = useRef(
-        Array.from({ length: 28 }, (_, i) => ({
-            x: Math.sin(i * 43.7) * 50 + 50,
-            y: Math.cos(i * 73.1) * 50 + 50,
-            s: 0.8 + (Math.abs(Math.sin(i * 17.3)) * 2.2),
-            d: 2.4 + (i % 5) * 0.7,
-            delay: -(i * 0.31),
-        }))
-    ).current;
-
-    return (
-        <motion.div
-            style={{ x: parallaxX, y: parallaxY }}
-            onHoverStart={() => setHovered(true)}
-            onHoverEnd={() => setHovered(false)}
-        >
-            <Box
-                sx={{
-                    position: "relative",
-                    width: { xs: 240, md: 320 },
-                    height: { xs: 240, md: 320 },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                {/* ── Deep space background disc ── */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        borderRadius: "50%",
-                        background: `
-                            radial-gradient(circle at 38% 36%,
-                                hsl(${hue1}, 70%, 12%) 0%,
-                                hsl(${hue2}, 55%, 8%) 38%,
-                                hsl(${hue3}, 40%, 4%) 70%,
-                                #050508 100%
-                            )
-                        `,
-                        border: `1px solid ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.18)}`,
-                        boxShadow: hovered
-                            ? `0 0 60px ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.28)}, 0 0 120px ${alpha(`hsl(${hue2}, 70%, 50%)`, 0.15)}, inset 0 0 40px ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.08)}`
-                            : `0 0 30px ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.14)}, 0 0 70px ${alpha(`hsl(${hue2}, 70%, 50%)`, 0.08)}, inset 0 0 20px ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.05)}`,
-                        transition: "box-shadow 0.5s ease",
-                    }}
-                />
-
-                {/* ── Background star field ── */}
-                <Box sx={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", zIndex: 1 }}>
-                    {stars.map((star, i) => (
-                        <motion.div
-                            key={i}
-                            animate={{ opacity: [star.s * 0.2, star.s * 0.9, star.s * 0.2], scale: [0.7, 1.1, 0.7] }}
-                            transition={{ duration: star.d, delay: star.delay, repeat: Infinity, ease: "easeInOut" }}
-                            style={{
-                                position: "absolute",
-                                left: `${star.x}%`,
-                                top: `${star.y}%`,
-                                width: Math.max(1, star.s * 1.1),
-                                height: Math.max(1, star.s * 1.1),
-                                borderRadius: "50%",
-                                background: `hsl(${(hue1 + i * 9) % 360}, 80%, 88%)`,
-                                boxShadow: `0 0 ${star.s * 3}px hsl(${(hue1 + i * 9) % 360}, 90%, 80%)`,
-                            }}
-                        />
-                    ))}
-                </Box>
-
-                {/* ── Nebula wisps ── */}
-                <Box sx={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", zIndex: 2 }}>
-                    {[0, 1, 2].map((n) => (
-                        <motion.div
-                            key={n}
-                            animate={{ rotate: [0, 360] }}
-                            transition={{ duration: 28 + n * 12, repeat: Infinity, ease: "linear", delay: -n * 9 }}
-                            style={{ position: "absolute", inset: 0, borderRadius: "50%" }}
-                        >
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    inset: 0,
-                                    borderRadius: "50%",
-                                    background: `radial-gradient(ellipse ${60 - n * 10}% ${40 - n * 5}% at ${30 + n * 20}% ${40 + n * 15}%,
-                                        ${alpha(`hsl(${(hue1 + n * 40) % 360}, 80%, 55%)`, 0.07 - n * 0.01)} 0%,
-                                        transparent 70%
-                                    )`,
-                                }}
-                            />
-                        </motion.div>
-                    ))}
-                </Box>
-
-                {/* ── Orbital rings (SVG) ── */}
-                {orbitals.map((orb, i) => {
-                    const size = orb.r * 2 + 20;
-                    const center = size / 2;
-                    const tilt = 12 + i * 8;
-                    return (
-                        <Box
-                            key={i}
-                            sx={{
-                                position: "absolute",
-                                width: size,
-                                height: size,
-                                left: "50%",
-                                top: "50%",
-                                transform: `translate(-50%, -50%) rotateX(${tilt}deg) rotateZ(${seed + i * 45}deg)`,
-                                zIndex: 3,
-                                pointerEvents: "none",
-                            }}
-                        >
-                            {/* Ring path */}
-                            <svg width={size} height={size} style={{ position: "absolute", inset: 0 }}>
-                                <circle
-                                    cx={center} cy={center} r={orb.r}
-                                    fill="none"
-                                    stroke={`hsl(${(hue1 + i * 30) % 360}, 75%, 65%)`}
-                                    strokeWidth="0.6"
-                                    strokeDasharray="3 8"
-                                    opacity={0.22}
-                                />
-                            </svg>
-                            {/* Orbiting dot */}
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: orb.duration, delay: orb.delay, repeat: Infinity, ease: "linear" }}
-                                style={{
-                                    position: "absolute", inset: 0,
-                                    transformOrigin: "center center",
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: "absolute",
-                                        width: orb.size,
-                                        height: orb.size,
-                                        borderRadius: "50%",
-                                        top: center - orb.size / 2 - orb.r,
-                                        left: center - orb.size / 2,
-                                        background: `hsl(${(hue1 + i * 30) % 360}, 90%, 80%)`,
-                                        boxShadow: `0 0 ${orb.size * 3}px ${orb.size}px hsl(${(hue1 + i * 30) % 360}, 90%, 70%)`,
-                                        opacity: orb.opacity,
-                                    }}
-                                />
-                            </motion.div>
-                        </Box>
-                    );
-                })}
-
-                {/* ── Feature badge: extra corona ring ── */}
-                {feature && (
-                    <motion.div
-                        animate={{ rotate: -360, scale: [1, 1.04, 1] }}
-                        transition={{ rotate: { duration: 22, repeat: Infinity, ease: "linear" }, scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-                        style={{
-                            position: "absolute",
-                            inset: -8,
-                            borderRadius: "50%",
-                            border: `1.5px solid ${alpha(`hsl(${hue1}, 90%, 70%)`, 0.38)}`,
-                            boxShadow: `0 0 18px ${alpha(`hsl(${hue1}, 90%, 70%)`, 0.22)}`,
-                            zIndex: 4,
-                        }}
-                    />
-                )}
-
-                {/* ── Central glow core ── */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        width: 90,
-                        height: 90,
-                        borderRadius: "50%",
-                        background: `radial-gradient(circle,
-                            ${alpha(`hsl(${hue1}, 80%, 70%)`, 0.22)} 0%,
-                            ${alpha(`hsl(${hue2}, 70%, 60%)`, 0.10)} 45%,
-                            transparent 70%
-                        )`,
-                        zIndex: 5,
-                        filter: "blur(6px)",
-                    }}
-                />
-
-                {/* ── Icon container ── */}
-                <motion.div
-                    animate={
-                        hovered
-                            ? { scale: 1.12, y: -4 }
-                            : { scale: [1, 1.04, 1], y: [0, -5, 0] }
-                    }
-                    transition={
-                        hovered
-                            ? { duration: 0.3, ease: "easeOut" }
-                            : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }
-                    }
-                    style={{ position: "relative", zIndex: 6 }}
-                >
-                    {/* Faceted glass shell */}
-                    <Box
-                        sx={{
-                            width: { xs: 68, md: 80 },
-                            height: { xs: 68, md: 80 },
-                            borderRadius: "28%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            position: "relative",
-                            background: `
-                                linear-gradient(135deg,
-                                    ${alpha(`hsl(${hue1}, 60%, 30%)`, 0.75)} 0%,
-                                    ${alpha(`hsl(${hue2}, 50%, 20%)`, 0.85)} 50%,
-                                    ${alpha(`hsl(${hue3}, 55%, 15%)`, 0.90)} 100%
-                                )
-                            `,
-                            border: `1px solid ${alpha(`hsl(${hue1}, 85%, 70%)`, 0.35)}`,
-                            boxShadow: `
-                                0 0 0 1px ${alpha(`hsl(${hue1}, 85%, 70%)`, 0.12)},
-                                0 8px 32px ${alpha(`hsl(${hue1}, 80%, 50%)`, 0.35)},
-                                0 2px 8px ${alpha("#000", 0.5)},
-                                inset 0 1px 0 ${alpha("#fff", 0.18)},
-                                inset 0 -1px 0 ${alpha("#000", 0.25)}
-                            `,
-                            backdropFilter: "blur(12px)",
-                            overflow: "hidden",
-                            "&::before": {
-                                content: '""',
-                                position: "absolute",
-                                inset: 0,
-                                borderRadius: "inherit",
-                                background: `linear-gradient(135deg, ${alpha("#fff", 0.14)} 0%, transparent 55%)`,
-                                pointerEvents: "none",
-                            },
-                        }}
-                    >
-                        {Icon && (
-                            <Icon
-                                sx={{
-                                    fontSize: { xs: 30, md: 36 },
-                                    color: `hsl(${hue1}, 85%, 85%)`,
-                                    filter: `drop-shadow(0 0 8px hsl(${hue1}, 90%, 70%)) drop-shadow(0 0 20px hsl(${hue2}, 80%, 60%))`,
-                                    position: "relative",
-                                    zIndex: 1,
-                                }}
-                            />
-                        )}
-                    </Box>
-
-                    {/* Reflection shimmer on icon shell */}
-                    <motion.div
-                        animate={{ opacity: [0, 0.6, 0], x: [-20, 20] }}
-                        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: index * 0.8 }}
-                        style={{
-                            position: "absolute",
-                            inset: 0,
-                            borderRadius: "28%",
-                            background: `linear-gradient(105deg, transparent 30%, ${alpha("#fff", 0.18)} 50%, transparent 70%)`,
-                            pointerEvents: "none",
-                            zIndex: 7,
-                        }}
-                    />
-                </motion.div>
-
-                {/* ── Subtle index badge ── */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        bottom: { xs: 18, md: 24 },
-                        right: { xs: 18, md: 24 },
-                        zIndex: 8,
-                        px: 1.1,
-                        py: 0.35,
-                        borderRadius: 99,
-                        background: alpha(`hsl(${hue1}, 60%, 15%)`, 0.85),
-                        border: `1px solid ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.3)}`,
-                        backdropFilter: "blur(6px)",
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            fontSize: "0.62rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.12em",
-                            color: `hsl(${hue1}, 80%, 75%)`,
-                            lineHeight: 1,
-                        }}
-                    >
-                        {String(index + 1).padStart(2, "0")}
-                    </Typography>
-                </Box>
-            </Box>
-        </motion.div>
-    );
-}
+import CosmicIconVisual from "./CosmicVisual";
 
 // ─── 3D Tilt Card ────────────────────────────────────────────────────────────
 function TiltCard({ children, isSmallDevice, isActive, theme, allowOverflow }) {
@@ -443,12 +129,6 @@ export default function TimelineItem({ item, index, isActive }) {
     const caseStudyRef = useRef(null);
     const previousProgressRef = useRef(0);
 
-    const parallaxMultiplier = item.feature ? 1.3 : 0.85;
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const visualX = useTransform(mouseX, (v) => v * 0.55 * parallaxMultiplier * -1);
-    const visualY = useTransform(mouseY, (v) => v * 0.55 * parallaxMultiplier * -1);
-
     const stackIconMap = useRef({
         react: reactLogo,
         "react native": reactLogo,
@@ -511,7 +191,7 @@ export default function TimelineItem({ item, index, isActive }) {
             <Box
                 sx={{
                     position: "absolute", inset: 0,
-                    background: `radial-gradient(circle at 50% 50%, ${alpha(theme.palette.primary.main, 0.08)}, transparent 58%)`,
+                    // background: `radial-gradient(circle at 50% 50%, ${alpha(theme.palette.primary.main, 0.08)}, transparent 58%)`,
                     filter: "blur(2px)", zIndex: -1,
                 }}
             />
@@ -525,18 +205,12 @@ export default function TimelineItem({ item, index, isActive }) {
                     justifyContent: "space-between",
                     gap: { xs: 3, md: 6 },
                 }}
-                onMouseMove={(e) => {
-                    if (isSmallDevice) return;
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    mouseX.set(((e.clientX - rect.left) / rect.width - 0.5) * 10);
-                    mouseY.set(((e.clientY - rect.top) / rect.height - 0.5) * 10);
-                }}
-                onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
             >
-                {/* LEFT / TEXT */}
+                {/* TEXT CARD SIDE */}
                 <Box
                     sx={{
-                        flex: 1, display: "flex",
+                        flex: 1,
+                        display: "flex",
                         justifyContent: isLeft ? "flex-end" : "flex-start",
                         order: { xs: 1, md: isLeft ? 1 : 3 },
                         position: "relative",
@@ -764,14 +438,25 @@ export default function TimelineItem({ item, index, isActive }) {
                     </AnimatePresence>
                 </Box>
 
-                {/* RIGHT / VISUAL — now using CosmicIconVisual */}
-                <Box sx={{ flex: 1, display: "flex", justifyContent: "center", order: { xs: 0, md: isLeft ? 3 : 1 }, width: "100%" }}>
+                {/* VISUAL SIDE — fills the full flex column, orb + constellation centred within */}
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        order: { xs: 0, md: isLeft ? 3 : 1 },
+                        // Let the column breathe — min height matches the card side
+                        minHeight: { md: 400 },
+                        position: "relative",
+                    }}
+                >
                     <CosmicIconVisual
                         Icon={Icon}
                         index={index}
                         feature={item.feature}
-                        parallaxX={visualX}
-                        parallaxY={visualY}
+                        // Pass up to 5 stack labels as constellation tags
+                        tags={item.stack?.slice(0, 5) ?? []}
                     />
                 </Box>
             </Box>

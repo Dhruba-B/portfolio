@@ -142,7 +142,7 @@ export default function HeroSection() {
                     alignItems: { xs: "center", md: "center" },
                     justifyContent: { xs: "center", md: "space-between" },
                     gap: { xs: 6, md: 10 },
-                    flexDirection: { xs: "column", md: "row" },
+                    flexDirection: { xs: "column-reverse", md: "row" },
                 }}
             >
                 {/* LEFT */}
@@ -295,13 +295,13 @@ export default function HeroSection() {
                 </Box>
 
                 {/* RIGHT */}
-                <motion.div style={{ y: yFront, position: "relative", zIndex: 6, display: { xs: "none", md: "flex" } }}>
+                <motion.div style={{ y: yFront, position: "relative", zIndex: 6, display: { xs: "flex", md: "flex" } }}>
                     <Box
                         sx={{
-                            width: { xs: 260, md: 340 },
-                            height: { xs: 260, md: 340 },
+                            width: { xs: 260, md: 440 },
+                            height: { xs: 260, md: 440 },
                             borderRadius: "50%",
-                            display: { xs: "none", md: "flex" },
+                            display: { xs: "flex", md: "flex" },
                             alignItems: "center",
                             justifyContent: "center",
                             background: alpha(theme.palette.primary.main, 0.16),
