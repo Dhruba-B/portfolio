@@ -5,7 +5,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-import resumeFile from "../../assets/resume-placeholder.pdf";
+import resumeFile from "../../assets/dhrubashis_cv.pdf";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 
 const credentials = [

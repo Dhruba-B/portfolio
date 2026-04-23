@@ -5,7 +5,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import resumeFile from "../assets/resume-placeholder.pdf";
+import resumeFile from "../assets/dhrubashis_cv.pdf";
 
 const options = [
   {

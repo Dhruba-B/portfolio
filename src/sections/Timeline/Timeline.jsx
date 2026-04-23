@@ -42,20 +42,37 @@ const data = [
     },
     {
         id: "medepal",
-        title: "React Native Healthcare Apps",
+        title: "React Native Healthcare App / Web",
         period: "MEDePAL + MHCP",
         subtitle: "Cross-platform caregiver and patient workflows",
-        stack: ["React Native", "REST APIs", "Role-based UX"],
+        stack: ["React", "React Native", "Role-based UX"],
         highlights: [
             "Delivered MEDePAL + MHCP apps in production across many healthcare roles.",
-            "Built shift management, patient logs, and booking flows end-to-end.",
+            "Built prescription flows, patient reports, lab bookings and other end-to-end services.",
             "Enabled white-label variants without forking core app logic.",
         ],
         icon: HealthAndSafetyIcon,
     },
     {
-        id: "whitelabel",
-        title: "Reusable UI Component Library",
+        id: "key-projects-mobile-and-fintech",
+        title: "White-label Mobile Delivery",
+        period: "MAMATA, Nursing App,",
+        subtitle: "Client-specific variants from a shared core",
+        stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
+        highlights: [
+            "Engineered MAMATA as a white-label extension of MEDePAL, enabling rapid client-specific deployments from a shared core.",
+            "Translated a single codebase into branded, feature-adaptive mobile variants through modular architecture",
+        ],
+        caseStudy: {
+            title: "White-labeled product Delivery",
+            summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
+            images: [medepal_1, medepal_2, medepal_3],
+        },
+        icon: MobileFriendlyIcon,
+    },
+    {
+        id: "UI_Architecture",
+        title: "Scalable, Component-Driven UI Architecture",
         period: "Platform Modernization",
         subtitle: "Shared React + MUI design system",
         stack: ["React", "MUI", "Component Architecture"],
@@ -69,11 +86,11 @@ const data = [
     {
         id: "nomura",
         title: "Nomura / Mitsubishi Trust Bank",
-        period: "Multi-Tenant Financial System",
+        period: "Multi-Tenant Financial Reconciliation System",
         subtitle: "Java + Spring Batch in regulated production",
         stack: ["Java", "Spring Batch", "Enterprise Processes"],
         highlights: [
-            "Contributed to trade and ledger settlement recompilation workflows.",
+            "Contributed to trade and ledger settlement reconciliation batch workflows.",
             "Worked on tenant-isolated processing with client-specific configurations.",
             "Delivered under fintech-grade compliance and enterprise review pipelines.",
         ],
@@ -98,38 +115,25 @@ const data = [
         icon: AutoAwesomeTwoToneIcon,
     },
     {
-        id: "key-projects-mobile-and-fintech",
-        title: "White-label Mobile Delivery",
-        period: "MAMATA, Nursing App, Nomura Platform",
-        subtitle: "Client-specific variants from a shared core",
-        stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
-        highlights: [
-            "Built MAMATA as a white-label MEDePAL variant with client-specific modules.",
-            "Adapted core app into branded variants via configuration — no logic duplication.",
-        ],
-        caseStudy: {
-            title: "White-labeled product Delivery",
-            summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
-            images: [medepal_1, medepal_2, medepal_3],
-        },
-        icon: MobileFriendlyIcon,
-    },
-    {
         id: "key-project-dynamic-forms",
-        title: "Dynamic Form Engine",
+        title: "Schema-Driven UI & Data Engine",
         feature: true,
-        period: "Schema-driven + Validations + DB Mapping",
-        subtitle: "Configuration as data, not code",
-        stack: ["React", "Validation Rules", "DB Mapping"],
+        period: "Forms + SQL + Reports + Widgets",
+        subtitle: "Configuration as stored data",
+        stack: ["React", "Dynamic Rendering", "Validation Rules", "SQL Engine"],
+
         highlights: [
-            "Moved field types, validations, and DB mappings into backend configuration.",
-            "Enabled new form types without frontend release dependency.",
+            "Designed a schema-driven engine to dynamically generate forms, reports, and UI widgets from backend configuration.",
+            "Enabled runtime SQL execution, validation logic, and database mappings without requiring frontend changes or redeployments.",
         ],
+
         caseStudy: {
-            title: "Dynamic Form Engine",
-            summary: "Schema-driven frontend forms rendered from configuration with validations and DB mappings.",
+            title: "Schema-Driven UI & Data Engine",
+            summary:
+                "A configuration-driven system enabling dynamic forms, SQL-powered reports, and widget generation from backend-defined schemas.",
             images: [formImage, widget_1, widget_2],
         },
+
         icon: SchemaTwoToneIcon,
     },
 ];

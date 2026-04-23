@@ -3,7 +3,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import DownloadIcon from "@mui/icons-material/Download";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import resumeFile from "../../assets/resume-placeholder.pdf";
+import resumeFile from "../../assets/dhrubashis_cv.pdf";
 
 export default function RoleCtaStrip() {
   const theme = useTheme();
