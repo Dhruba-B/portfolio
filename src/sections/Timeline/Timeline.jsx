@@ -39,6 +39,7 @@ const data = [
             "Applied reusable architecture patterns to support multi-tenant scale.",
         ],
         icon: RocketLaunchIcon,
+        visualType: "data"
     },
     {
         id: "medepal",
@@ -52,6 +53,7 @@ const data = [
             "Enabled white-label variants without forking core app logic.",
         ],
         icon: HealthAndSafetyIcon,
+        visualType: "health"
     },
     {
         id: "key-projects-mobile-and-fintech",
@@ -69,6 +71,7 @@ const data = [
             images: [medepal_1, medepal_2, medepal_3],
         },
         icon: MobileFriendlyIcon,
+        visualType: "mobile"
     },
     {
         id: "UI_Architecture",
@@ -82,6 +85,7 @@ const data = [
             "Set scalable front-end standards for multi-tenant products.",
         ],
         icon: WidgetsIcon,
+        visualType: "system"
     },
     {
         id: "nomura",
@@ -95,6 +99,7 @@ const data = [
             "Delivered under fintech-grade compliance and enterprise review pipelines.",
         ],
         icon: AccountBalanceIcon,
+        visualType: "infra"
     },
     {
         id: "key-project-query-builder",
@@ -113,6 +118,7 @@ const data = [
             images: [chatImage_1, chatImage_2, chatImage_load],
         },
         icon: AutoAwesomeTwoToneIcon,
+        visualType: "ai"
     },
     {
         id: "key-project-dynamic-forms",
@@ -135,6 +141,7 @@ const data = [
         },
 
         icon: SchemaTwoToneIcon,
+        visualType: "data"
     },
 ];
 

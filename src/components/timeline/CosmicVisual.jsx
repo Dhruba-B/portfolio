@@ -2,6 +2,7 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import { useRef, useState, useMemo } from "react";
+import { renderAICore, renderDataCore, renderDefaultCore, renderHealthCore, renderInfraCore, renderMobileCore, renderSystemCore } from "../common/RenderVisual";
 
 // ─── Constellation helpers ────────────────────────────────────────────────────
 // Tag anchor points — angle (degrees) and distance multiplier from orb edge
@@ -51,13 +52,7 @@ function FloatingTag({ label, index, hue, delay }) {
 }
 
 // ─── CosmicIconVisual ─────────────────────────────────────────────────────────
-// Based on user's version with constellation lines + floating skill tags added.
-// Original changes preserved:
-//   • Star background field commented out (no background on star dots)
-//   • Star core radial burst as background
-//   • Pinpoint core removed (user did not include it)
-//   • Ring, glow, shell, badge all kept as-is
-export default function CosmicIconVisual({ Icon, index, feature, tags = [] }) {
+export default function CosmicIconVisual({ Icon, index, feature, tags = [], visualType = "default" }) {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
     const [hovered, setHovered] = useState(false);
@@ -70,7 +65,7 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [] }) {
 
     // User's original sizes
     const orbSize = isSmall ? 200 : 280;
-    const shellSize = isSmall ? 60 : 76;
+    const shellSize = isSmall ? 70 : 100;
     const iconFontSize = isSmall ? 26 : 34;
 
     // Scene expands beyond the orb to give tags room
@@ -109,6 +104,20 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [] }) {
         const tagPt = polar(cx, cy, layout.angle, totalR);
         return { edgePt, midPt, tagPt, hue: (hue1 + i * 42) % 360, layout };
     }), [activeTags.length, cx, cy, orbR, hue1]);
+
+    function getCoreRenderer(type) {
+        const map = {
+            data: renderDataCore,
+            ai: renderAICore,
+            mobile: renderMobileCore,
+            system: renderSystemCore,
+            infra: renderInfraCore,
+            health: renderHealthCore,
+            default: renderDefaultCore,
+        };
+
+        return map[type] || map.default;
+    }
 
     return (
         <Box
@@ -288,47 +297,60 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [] }) {
 
                 {/* ── Icon shell (user's original) ── */}
                 <motion.div
-                    animate={hovered ? { y: -6, scale: 1.08 } : { y: [0, -7, 0], scale: 1 }}
-                    transition={hovered
-                        ? { duration: 0.28, ease: "easeOut" }
-                        : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }
-                    }
-                    style={{ position: "relative", zIndex: 5 }}
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{
+                        duration: 5.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                    }}
                 >
-                    <Box sx={{
-                        width: shellSize, height: shellSize,
-                        borderRadius: "22px",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        position: "relative",
-                        background: `linear-gradient(145deg,
+                    <motion.div
+                        animate={{
+                            y: hovered ? -10 : 0,
+                            scale: hovered ? 1.08 : 1,
+                        }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 120,
+                            damping: 14,
+                        }}
+                        style={{ position: "relative", zIndex: 5 }}
+                    >
+                        <Box sx={{
+                            width: shellSize, height: shellSize,
+                            borderRadius: "22px",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            position: "relative",
+                            background: `linear-gradient(145deg,
                             hsl(${hue1}, 55%, 22%) 0%,
                             hsl(${hue2}, 45%, 12%) 60%,
                             hsl(${hue3}, 40%, 8%)  100%
                         )`,
-                        border: `1px solid ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.38)}`,
-                        boxShadow: `
+                            border: `1px solid ${alpha(`hsl(${hue1}, 80%, 60%)`, 0.38)}`,
+                            boxShadow: `
                             0 0 28px ${alpha(`hsl(${hue1}, 75%, 45%)`, 0.38)},
                             0 4px 16px ${alpha("#000", 0.45)},
                             inset 0 1px 0 ${alpha("#fff", 0.14)}
                         `,
-                        "&::before": {
-                            content: '""', position: "absolute", inset: 0,
-                            borderRadius: "inherit",
-                            background: `linear-gradient(135deg, ${alpha("#fff", 0.12)} 0%, transparent 55%)`,
-                            pointerEvents: "none",
-                        },
-                    }}>
-                        {Icon && (
+                            "&::before": {
+                                content: '""', position: "absolute", inset: 0,
+                                borderRadius: "inherit",
+                                background: `linear-gradient(135deg, ${alpha("#fff", 0.12)} 0%, transparent 55%)`,
+                                pointerEvents: "none",
+                            },
+                        }}>
+                            {/* {Icon && (
                             <Icon sx={{
                                 fontSize: iconFontSize,
                                 color: `hsl(${hue1}, 85%, 85%)`,
                                 filter: `drop-shadow(0 0 8px hsl(${hue1}, 85%, 65%))`,
                                 position: "relative", zIndex: 1,
                             }} />
-                        )}
-                    </Box>
+                        )} */}
+                            {getCoreRenderer(visualType)({ hue1, hue2, hue3, Icon, hovered })}
+                        </Box>
+                    </motion.div>
                 </motion.div>
-
                 {/* ── Index badge (user's original) ── */}
                 <Typography sx={{
                     position: "absolute",

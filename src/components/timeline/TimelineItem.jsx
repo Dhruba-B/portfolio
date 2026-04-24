@@ -176,6 +176,20 @@ export default function TimelineItem({ item, index, isActive }) {
         return () => clearInterval(timer);
     }, [isCaseStudyHovered, isSmallDevice, caseImages.length]);
 
+    function getSemanticTags(item) {
+        const map = {
+            data: ["Schema", "Query", "Render", "Validate"],
+            ai: ["Prompt", "Parse", "Validate", "Execute"],
+            mobile: ["Core", "Brand", "Deploy", "Adapt"],
+            system: ["Components", "Tokens", "Layout", "Reuse"],
+            infra: ["Batch", "Process", "Tenant", "Ledger"],
+            health: ["Patient", "Care", "Workflow", "Report"],
+            core: ["Fullstack", "API", "UI", "DB"],
+        };
+
+        return map[item.visualType] || item.stack?.slice(0, 5);
+    }
+
     return (
         <Box
             sx={{
@@ -455,8 +469,8 @@ export default function TimelineItem({ item, index, isActive }) {
                         Icon={Icon}
                         index={index}
                         feature={item.feature}
-                        // Pass up to 5 stack labels as constellation tags
-                        tags={item.stack?.slice(0, 5) ?? []}
+                        visualType={item.visualType}
+                        tags={getSemanticTags(item)}
                     />
                 </Box>
             </Box>
