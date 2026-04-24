@@ -10,6 +10,7 @@ import springLogo from "../../assets/icons/spring.png";
 import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.svg";
 import CosmicIconVisual from "./CosmicVisual";
+import { createPortal } from "react-dom";
 
 // ─── 3D Tilt Card ────────────────────────────────────────────────────────────
 function TiltCard({ children, isSmallDevice, isActive, theme, allowOverflow }) {
@@ -121,6 +122,7 @@ export default function TimelineItem({ item, index, isActive }) {
     const [isCaseStudyHovered, setIsCaseStudyHovered] = useState(false);
     const [activeCaseImage, setActiveCaseImage] = useState(0);
     const [caseProgress, setCaseProgress] = useState(0);
+    const [openCasePreview, setOpenCasePreview] = useState(false);
     const [progressTransition, setProgressTransition] = useState("none");
     const isLeft = index % 2 === 0;
     const Icon = item.icon;
@@ -175,6 +177,16 @@ export default function TimelineItem({ item, index, isActive }) {
         }, 60);
         return () => clearInterval(timer);
     }, [isCaseStudyHovered, isSmallDevice, caseImages.length]);
+
+    useEffect(() => {
+        if (!openCasePreview) return;
+
+        const interval = setInterval(() => {
+            setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
+        }, 2500);
+
+        return () => clearInterval(interval);
+    }, [openCasePreview, caseImages.length]);
 
     function getSemanticTags(item) {
         const map = {
@@ -417,6 +429,20 @@ export default function TimelineItem({ item, index, isActive }) {
                                                 </Box>
                                             </motion.div>
                                         )}
+                                        {isSmallDevice && caseImages.length > 0 && (
+                                            <Box
+                                                onClick={() => isSmallDevice && setOpenCasePreview(true)}
+                                                sx={{
+                                                    px: 0.8,
+                                                    py: 0.4,
+                                                    borderRadius: 99,
+                                                    background: alpha(theme.palette.primary.main, 0.08),
+                                                    fontSize: "0.65rem",
+                                                }}
+                                            >
+                                                Tap
+                                            </Box>
+                                        )}
                                     </Typography>
                                     <Typography sx={{ fontWeight: 700, color: "text.primary", mb: 0.5 }}>{item.caseStudy.title}</Typography>
                                     <Typography sx={{ color: "text.secondary", fontSize: "0.9rem", lineHeight: 1.5 }}>{item.caseStudy.summary}</Typography>
@@ -449,6 +475,155 @@ export default function TimelineItem({ item, index, isActive }) {
                                 </Box>
                             </motion.div>
                         )}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                        {isSmallDevice && openCasePreview &&
+
+                            <>
+                                {/* Backdrop */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 0.4 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setOpenCasePreview(false)}
+                                    style={{
+                                        position: "fixed",
+                                        inset: 0,
+                                        background: "#000",
+                                        zIndex: 19999,
+                                    }}
+                                />
+
+                                {/* Bottom Sheet */}
+                                <motion.div
+                                    initial={{ y: "100%" }}
+                                    animate={{ y: 0 }}
+                                    exit={{ y: "100%" }}
+                                    transition={{ duration: 0.35, ease: "easeOut" }}
+                                    style={{
+                                        position: "fixed",
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        zIndex: 20000,
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            borderTopLeftRadius: 16,
+                                            borderTopRightRadius: 16,
+                                            p: 1.2,
+                                            background: theme.palette.background.paper,
+                                            boxShadow: "0 -10px 40px rgba(0,0,0,0.25)",
+                                        }}
+                                    >
+                                        {/* Drag Handle */}
+                                        <Box
+                                            sx={{
+                                                width: 40,
+                                                height: 4,
+                                                borderRadius: 99,
+                                                background: "grey.500",
+                                                mx: "auto",
+                                                mb: 1,
+                                            }}
+                                        />
+
+                                        {/* Swipe + Image */}
+                                        <motion.div
+                                            drag="x"
+                                            dragConstraints={{ left: 0, right: 0 }}
+                                            onDragEnd={(e, info) => {
+                                                if (info.offset.x < -50) {
+                                                    setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
+                                                } else if (info.offset.x > 50) {
+                                                    setActiveCaseImage((prev) =>
+                                                        prev === 0 ? caseImages.length - 1 : prev - 1
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <AnimatePresence mode="wait">
+                                                <motion.img
+                                                    key={activeCaseImage}
+                                                    src={caseImages[activeCaseImage]}
+                                                    initial={{ opacity: 0, x: 40 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -40 }}
+                                                    transition={{ duration: 0.35 }}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: 220,
+                                                        objectFit: "contain",
+                                                        borderRadius: 12,
+                                                    }}
+                                                />
+                                            </AnimatePresence>
+                                        </motion.div>
+
+                                        {/* Progress */}
+                                        <Box
+                                            sx={{
+                                                mt: 1,
+                                                height: 4,
+                                                borderRadius: 999,
+                                                background: "grey.300",
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    width: `${caseProgress}%`,
+                                                    height: "100%",
+                                                    background: theme.palette.primary.main,
+                                                    transition: "width 0.2s linear",
+                                                }}
+                                            />
+                                        </Box>
+
+                                        {/* Dots */}
+                                        <Box
+                                            sx={{
+                                                mt: 1,
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                gap: 0.6,
+                                            }}
+                                        >
+                                            {caseImages.map((_, i) => (
+                                                <Box
+                                                    key={i}
+                                                    sx={{
+                                                        width: i === activeCaseImage ? 14 : 6,
+                                                        height: 6,
+                                                        borderRadius: 99,
+                                                        background:
+                                                            i === activeCaseImage
+                                                                ? theme.palette.primary.main
+                                                                : "grey.400",
+                                                        transition: "all 0.2s ease",
+                                                    }}
+                                                />
+                                            ))}
+                                        </Box>
+
+                                        {/* Close */}
+                                        <Box
+                                            onClick={() => setOpenCasePreview(false)}
+                                            sx={{
+                                                mt: 1.2,
+                                                textAlign: "center",
+                                                fontSize: "0.8rem",
+                                                color: "primary.main",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            Close
+                                        </Box>
+                                    </Box>
+                                </motion.div>
+                            </>}
                     </AnimatePresence>
                 </Box>
 
