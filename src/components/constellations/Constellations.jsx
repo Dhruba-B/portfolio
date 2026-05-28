@@ -45,7 +45,7 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
         return { nodes, edges };
     }
 
-    const { nodes, edges } = useMemo(() => generateConstellation(10), []);
+    const { nodes, edges } = useMemo(() => generateConstellation(7), []);
 
     return (
         <motion.div
@@ -69,10 +69,8 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                     const na = nodes[a];
                     const nb = nodes[b];
                     const edgeSeed = a * 31 + b;
-                    const dur = 5 + seededRandom(edgeSeed) * 3;
-                    const del = -(seededRandom(edgeSeed + 7) * 3);
                     return (
-                        <motion.line
+                        <line
                             key={`${a}-${b}`}
                             x1={na.x}
                             y1={na.y}
@@ -80,13 +78,7 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                             y2={nb.y}
                             stroke={alpha(theme.palette.primary.main, 1)}
                             strokeWidth="0.6"
-                            animate={{ opacity: [0.03, 0.14, 0.03] }}
-                            transition={{
-                                duration: dur,
-                                delay: del,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
+                            opacity={0.08 + seededRandom(edgeSeed + 3) * 0.05}
                         />
                     );
                 })}
@@ -108,7 +100,7 @@ export default function Constellations({ yMid, parallaxX, auroraDriftY }) {
                             r: [node.size * 0.85, node.size * 1.15, node.size * 0.85],
                         }}
                         transition={{
-                            duration: node.duration,
+                            duration: node.duration + 3,
                             delay: node.delay,
                             repeat: Infinity,
                             ease: "easeInOut",

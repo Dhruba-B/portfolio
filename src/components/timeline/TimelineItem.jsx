@@ -1,64 +1,33 @@
 import { Box, Chip, Typography, Button, useMediaQuery } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
 import AdsClickIcon from "@mui/icons-material/AdsClick";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import reactLogo from "../../assets/react.svg";
 import jsLogo from "../../assets/icons/js.webp";
 import javaLogo from "../../assets/icons/java.svg";
 import springLogo from "../../assets/icons/spring.png";
 import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.svg";
+import postgresqlLogo from "../../assets/icons/Postgresql.svg.png";
+import nodeLogo from "../../assets/icons/node.png";
+import redis from "../../assets/icons/redis.png";
+import dockerLogo from "../../assets/icons/docker.png";
 import CosmicIconVisual from "./CosmicVisual";
-import { createPortal } from "react-dom";
 
 // ─── 3D Tilt Card ────────────────────────────────────────────────────────────
 function TiltCard({ children, isSmallDevice, isActive, theme, allowOverflow }) {
-    const cardRef = useRef(null);
-    const rawX = useMotionValue(0);
-    const rawY = useMotionValue(0);
-    const glareX = useMotionValue(50);
-    const glareY = useMotionValue(50);
-    const springConfig = { stiffness: 180, damping: 28, mass: 0.6 };
-    const smoothX = useSpring(rawX, springConfig);
-    const smoothY = useSpring(rawY, springConfig);
-    const rotateY = useTransform(smoothX, [-1, 1], [-12, 12]);
-    const rotateX = useTransform(smoothY, [-1, 1], [10, -10]);
     const [isHovered, setIsHovered] = useState(false);
-
-    const handleMouseMove = (e) => {
-        if (isSmallDevice || !cardRef.current) return;
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        rawX.set((x - 0.5) * 2);
-        rawY.set((y - 0.5) * 2);
-        glareX.set(x * 100);
-        glareY.set(y * 100);
-    };
-
-    const handleMouseLeave = () => {
-        rawX.set(0); rawY.set(0);
-        glareX.set(50); glareY.set(50);
-        setIsHovered(false);
-    };
 
     return (
         <motion.div
-            ref={cardRef}
-            onMouseMove={handleMouseMove}
             onMouseEnter={() => !isSmallDevice && setIsHovered(true)}
-            onMouseLeave={handleMouseLeave}
-            style={{
-                rotateX: isSmallDevice ? 0 : rotateX,
-                rotateY: isSmallDevice ? 0 : rotateY,
-                transformStyle: "preserve-3d",
-                transformPerspective: 900,
-                scale: isHovered ? 1.018 : 1,
-                transition: "scale 0.3s ease",
-                borderRadius: 16,
-                position: "relative",
-            }}
+            onMouseLeave={() => setIsHovered(false)}
+            whileHover={isSmallDevice ? undefined : { y: -4 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            style={{ borderRadius: 16, position: "relative" }}
         >
             <Box
                 sx={{
@@ -70,44 +39,24 @@ function TiltCard({ children, isSmallDevice, isActive, theme, allowOverflow }) {
                     backdropFilter: "blur(12px)",
                     textAlign: "left",
                     boxShadow: isActive
-                        ? `0 20px 70px ${theme.palette.primary.glow}`
+                        ? `0 14px 46px ${alpha(theme.palette.primary.main, 0.26)}`
                         : isHovered
-                            ? `0 28px 80px ${alpha(theme.palette.primary.main, 0.22)}, 0 4px 20px ${alpha(theme.palette.primary.main, 0.1)}`
+                            ? `0 16px 46px ${alpha(theme.palette.primary.main, 0.18)}, 0 4px 18px ${alpha(theme.palette.primary.main, 0.08)}`
                             : "0 4px 24px rgba(0,0,0,0.12)",
                     overflow: allowOverflow ? "visible" : "hidden",
-                    transition: "box-shadow 0.35s ease",
+                    transition: "box-shadow 0.28s ease, border-color 0.28s ease",
+                    "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "inherit",
+                        pointerEvents: "none",
+                        opacity: isHovered ? 1 : 0.55,
+                        background: `linear-gradient(135deg, ${alpha("#fff", 0.07)} 0%, transparent 34%)`,
+                        transition: "opacity 0.28s ease",
+                    },
                 }}
             >
-                {!isSmallDevice && (
-                    <motion.div
-                        style={{
-                            position: "absolute", inset: 0, pointerEvents: "none",
-                            borderRadius: "inherit", zIndex: 10,
-                            opacity: isHovered ? 1 : 0,
-                            transition: "opacity 0.3s ease",
-                            background: useTransform(
-                                [glareX, glareY],
-                                ([gx, gy]) => `radial-gradient(circle at ${gx}% ${gy}%, ${alpha("#ffffff", 0.13)} 0%, transparent 65%)`
-                            ),
-                        }}
-                    />
-                )}
-                {!isSmallDevice && (
-                    <motion.div
-                        style={{
-                            position: "absolute", top: 0, left: 0, right: 0, height: 1,
-                            background: useTransform(
-                                smoothY, [-1, 0, 1],
-                                [
-                                    `linear-gradient(90deg, ${alpha("#fff", 0.55)}, ${alpha("#fff", 0.18)})`,
-                                    `linear-gradient(90deg, ${alpha("#fff", 0.1)}, ${alpha("#fff", 0.06)})`,
-                                    `linear-gradient(90deg, ${alpha("#fff", 0.02)}, transparent)`,
-                                ]
-                            ),
-                            borderRadius: "16px 16px 0 0", pointerEvents: "none", zIndex: 11,
-                        }}
-                    />
-                )}
                 {children}
             </Box>
         </motion.div>
@@ -126,12 +75,56 @@ export default function TimelineItem({ item, index, isActive }) {
     const [progressTransition, setProgressTransition] = useState("none");
     const isLeft = index % 2 === 0;
     const Icon = item.icon;
-    const caseIntervalMs = 4800;
+    const caseIntervalMs = 7500;
     const caseImages = item.caseStudy?.images ?? (item.caseStudy?.image ? [item.caseStudy.image] : []);
-    const caseStudyRef = useRef(null);
-    const previousProgressRef = useRef(0);
 
-    const stackIconMap = useRef({
+    // --- Hover bridge logic ---
+    // We use a leave-delay so that when the mouse moves from the card trigger
+    // into the gap before reaching the floating preview, we don't dismiss it.
+    // As soon as the pointer enters the preview panel the pending close is cancelled.
+    const leaveTimerRef = useRef(null);
+    const LEAVE_DELAY_MS = 120; // ms — enough to cross a small gap
+
+    const handleHoverZoneEnter = useCallback(() => {
+        if (isSmallDevice) return;
+        clearTimeout(leaveTimerRef.current);
+        setIsCaseStudyHovered(true);
+    }, [isSmallDevice]);
+
+    const handleHoverZoneLeave = useCallback(() => {
+        if (isSmallDevice) return;
+        leaveTimerRef.current = setTimeout(() => {
+            setIsCaseStudyHovered(false);
+        }, LEAVE_DELAY_MS);
+    }, [isSmallDevice]);
+
+    // Cleanup on unmount
+    useEffect(() => () => clearTimeout(leaveTimerRef.current), []);
+
+    const previousProgressRef = useRef(0);
+    // Epoch timestamp reset each time the user manually navigates — restarts progress from 0
+    const timerEpochRef = useRef(Date.now());
+
+    // Navigate manually; resets the auto-advance timer to 0
+    const goToImage = useCallback((nextIndex) => {
+        setActiveCaseImage(nextIndex);
+        setCaseProgress(0);
+        setProgressTransition("none");
+        previousProgressRef.current = 0;
+        timerEpochRef.current = Date.now();
+    }, []);
+
+    const goPrev = useCallback((e) => {
+        e.stopPropagation();
+        goToImage((activeCaseImage - 1 + caseImages.length) % caseImages.length);
+    }, [activeCaseImage, caseImages.length, goToImage]);
+
+    const goNext = useCallback((e) => {
+        e.stopPropagation();
+        goToImage((activeCaseImage + 1) % caseImages.length);
+    }, [activeCaseImage, caseImages.length, goToImage]);
+
+    const stackIconMap = {
         react: reactLogo,
         "react native": reactLogo,
         javascript: jsLogo,
@@ -142,11 +135,15 @@ export default function TimelineItem({ item, index, isActive }) {
         spring: springLogo,
         mysql: mysqlLogo,
         git: gitLogo,
-    });
+        postgresql: postgresqlLogo,
+        "node.js": nodeLogo,
+        redis: redis,
+        docker: dockerLogo,
+    };
 
     const getStackIconSrc = (label) => {
         const key = String(label ?? "").trim().toLowerCase();
-        return stackIconMap.current[key] ?? null;
+        return stackIconMap[key] ?? null;
     };
 
     const container = {
@@ -160,31 +157,35 @@ export default function TimelineItem({ item, index, isActive }) {
     };
 
     useEffect(() => {
-        if (isSmallDevice || !isCaseStudyHovered || caseImages.length <= 1) {
-            setCaseProgress(0);
-            return;
-        }
-        const startedAt = Date.now();
+        if (isSmallDevice || !isCaseStudyHovered || caseImages.length <= 1) return;
+        // timerEpochRef is reset by goToImage() on manual nav — the interval
+        // picks it up on its next tick, restarting the progress bar from 0.
         const timer = setInterval(() => {
-            const elapsed = Date.now() - startedAt;
+            const elapsed = Date.now() - timerEpochRef.current;
             const inCycle = elapsed % caseIntervalMs;
-            const nextIndex = Math.floor(elapsed / caseIntervalMs) % caseImages.length;
             const nextProgress = (inCycle / caseIntervalMs) * 100;
-            setActiveCaseImage(nextIndex);
-            setProgressTransition(nextProgress < previousProgressRef.current ? "none" : "width 60ms linear");
-            setCaseProgress(nextProgress);
-            previousProgressRef.current = nextProgress;
+
+            if (elapsed >= caseIntervalMs && inCycle < 60) {
+                // Full cycle completed — advance image and reset epoch
+                setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
+                timerEpochRef.current = Date.now();
+                setCaseProgress(0);
+                setProgressTransition("none");
+                previousProgressRef.current = 0;
+            } else {
+                setProgressTransition(nextProgress < previousProgressRef.current ? "none" : "width 60ms linear");
+                setCaseProgress(nextProgress);
+                previousProgressRef.current = nextProgress;
+            }
         }, 60);
         return () => clearInterval(timer);
     }, [isCaseStudyHovered, isSmallDevice, caseImages.length]);
 
     useEffect(() => {
         if (!openCasePreview) return;
-
         const interval = setInterval(() => {
             setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
         }, 2500);
-
         return () => clearInterval(interval);
     }, [openCasePreview, caseImages.length]);
 
@@ -198,7 +199,6 @@ export default function TimelineItem({ item, index, isActive }) {
             health: ["Patient", "Care", "Workflow", "Report"],
             core: ["Fullstack", "API", "UI", "DB"],
         };
-
         return map[item.visualType] || item.stack?.slice(0, 5);
     }
 
@@ -213,14 +213,7 @@ export default function TimelineItem({ item, index, isActive }) {
                 position: "relative",
             }}
         >
-            {/* Background glow */}
-            <Box
-                sx={{
-                    position: "absolute", inset: 0,
-                    // background: `radial-gradient(circle at 50% 50%, ${alpha(theme.palette.primary.main, 0.08)}, transparent 58%)`,
-                    filter: "blur(2px)", zIndex: -1,
-                }}
-            />
+            <Box sx={{ position: "absolute", inset: 0, filter: "blur(2px)", zIndex: -1 }} />
 
             <Box
                 sx={{
@@ -260,7 +253,7 @@ export default function TimelineItem({ item, index, isActive }) {
                         variants={container}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: false, margin: "-100px" }}
+                        viewport={{ once: true, margin: "-100px" }}
                         style={{ width: "100%", maxWidth: 600 }}
                     >
                         <TiltCard
@@ -271,8 +264,10 @@ export default function TimelineItem({ item, index, isActive }) {
                         >
                             {item.feature && (
                                 <motion.div
-                                    animate={{ y: [0, -7, 0], rotate: [0, 2, 0] }}
-                                    transition={{ duration: 4.6, repeat: Infinity, ease: "easeInOut" }}
+                                    initial={{ opacity: 0, y: -4 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.35, ease: "easeOut" }}
                                     style={{ position: "absolute", top: -14, right: 20, zIndex: 12 }}
                                 >
                                     <Box
@@ -400,11 +395,46 @@ export default function TimelineItem({ item, index, isActive }) {
                                 </motion.div>
                             )}
 
+                            {item.links && (
+                                <motion.div variants={itemVariant}>
+                                    <Box sx={{ mt: 2.2, display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                        <Button
+                                            size="small" variant="outlined" startIcon={<GitHubIcon />}
+                                            href={item.links.github || undefined}
+                                            target={item.links.github ? "_blank" : undefined}
+                                            rel={item.links.github ? "noopener noreferrer" : undefined}
+                                            disabled={!item.links.github}
+                                            sx={{
+                                                borderColor: theme.palette.primary.border, color: "text.secondary", textTransform: "none",
+                                                background: alpha(theme.palette.primary.main, 0.05),
+                                                "&:hover": { borderColor: alpha(theme.palette.primary.main, 0.5), background: alpha(theme.palette.primary.main, 0.12) },
+                                                "&.Mui-disabled": { borderColor: alpha(theme.palette.primary.main, 0.16), color: alpha(theme.palette.text.secondary, 0.52) },
+                                            }}
+                                        >
+                                            GitHub
+                                        </Button>
+                                        <Button
+                                            size="small" variant="contained" endIcon={<OpenInNewIcon />}
+                                            href={item.links.demo || undefined}
+                                            target={item.links.demo ? "_blank" : undefined}
+                                            rel={item.links.demo ? "noopener noreferrer" : undefined}
+                                            disabled={!item.links.demo}
+                                            sx={{
+                                                textTransform: "none",
+                                                boxShadow: item.links.demo ? `0 8px 24px ${alpha(theme.palette.primary.main, 0.22)}` : "none",
+                                                "&.Mui-disabled": { background: alpha(theme.palette.primary.main, 0.12), color: alpha(theme.palette.text.secondary, 0.52) },
+                                            }}
+                                        >
+                                            Live demo
+                                        </Button>
+                                    </Box>
+                                </motion.div>
+                            )}
+
                             {item.caseStudy && (
                                 <Box
-                                    ref={caseStudyRef}
-                                    onMouseEnter={() => !isSmallDevice && setIsCaseStudyHovered(true)}
-                                    onMouseLeave={() => !isSmallDevice && setIsCaseStudyHovered(false)}
+                                    onMouseEnter={handleHoverZoneEnter}
+                                    onMouseLeave={handleHoverZoneLeave}
                                     sx={{
                                         position: "relative", mt: 2.2, p: 1.5, borderRadius: 2.5,
                                         border: `1px solid ${alpha(theme.palette.primary.main, 0.24)}`,
@@ -421,7 +451,7 @@ export default function TimelineItem({ item, index, isActive }) {
                                         />
                                     ))}
                                     <Typography sx={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.07em", color: "text.secondary", display: "flex", alignItems: "center", gap: 2, mb: 0.6 }}>
-                                        Case Study
+                                        Hover to see more
                                         {!isSmallDevice && caseImages.length > 0 && (
                                             <motion.div animate={{ opacity: [0.55, 0.95, 0.55], y: [0, -1.5, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
                                                 <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.55, px: 0.8, py: 0.4, borderRadius: 99, background: alpha(theme.palette.primary.main, 0.08) }}>
@@ -431,14 +461,8 @@ export default function TimelineItem({ item, index, isActive }) {
                                         )}
                                         {isSmallDevice && caseImages.length > 0 && (
                                             <Box
-                                                onClick={() => isSmallDevice && setOpenCasePreview(true)}
-                                                sx={{
-                                                    px: 0.8,
-                                                    py: 0.4,
-                                                    borderRadius: 99,
-                                                    background: alpha(theme.palette.primary.main, 0.08),
-                                                    fontSize: "0.65rem",
-                                                }}
+                                                onClick={() => setOpenCasePreview(true)}
+                                                sx={{ px: 0.8, py: 0.4, borderRadius: 99, background: alpha(theme.palette.primary.main, 0.08), fontSize: "0.65rem" }}
                                             >
                                                 Tap
                                             </Box>
@@ -451,25 +475,138 @@ export default function TimelineItem({ item, index, isActive }) {
                         </TiltCard>
                     </motion.div>
 
+                    {/* ── Floating preview panel (desktop) ── */}
                     <AnimatePresence>
                         {!isSmallDevice && isCaseStudyHovered && caseImages.length > 0 && (
                             <motion.div
+                                onMouseEnter={handleHoverZoneEnter}
+                                onMouseLeave={handleHoverZoneLeave}
                                 initial={{ opacity: 0, x: isLeft ? 12 : -12, y: 6 }}
-                                animate={{ opacity: 1, x: 0, y: 0 }}
+                                animate={{ opacity: 1, x: isLeft ? -150 : 150, y: -150 }}
                                 exit={{ opacity: 0, x: isLeft ? 12 : -12, y: 6 }}
                                 transition={{ duration: 0.22, ease: "easeOut" }}
-                                style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", width: 720, zIndex: 1200, left: isLeft ? "calc(100% + 16px)" : "auto", right: isLeft ? "auto" : "calc(100% + 16px)" }}
+                                style={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    width: 1080,
+                                    zIndex: 100,
+                                    left: isLeft ? "calc(100% + 16px)" : "auto",
+                                    right: isLeft ? "auto" : "calc(100% + 16px)",
+                                }}
                             >
                                 <Box sx={{ p: 1.2, borderRadius: 2, border: `1px solid ${alpha(theme.palette.primary.main, 0.26)}`, background: alpha(theme.palette.background.paper, 0.92), backdropFilter: "blur(8px)", boxShadow: `0 14px 40px ${alpha(theme.palette.primary.main, 0.22)}` }}>
-                                    <Box component="img" src={caseImages[activeCaseImage]} alt={`${item.caseStudy.title} preview ${activeCaseImage + 1}`}
-                                        sx={{ width: "100%", height: 350, objectFit: "contain", borderRadius: 1.4, border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}` }}
-                                    />
-                                    <Box sx={{ mt: 1, height: 4, borderRadius: 999, background: alpha(theme.palette.primary.main, 0.18), overflow: "hidden" }}>
-                                        <Box sx={{ width: `${caseProgress}%`, height: "100%", background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent.main})`, transition: progressTransition }} />
+                                    {/* Image with prev/next arrow overlays */}
+                                    <Box sx={{ position: "relative" }}>
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={activeCaseImage}
+                                                initial={{ opacity: 0, x: 18 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -18 }}
+                                                transition={{ duration: 0.22, ease: "easeOut" }}
+                                            >
+                                                <Box component="img"
+                                                    src={caseImages[activeCaseImage]}
+                                                    alt={`${item.caseStudy.title} preview ${activeCaseImage + 1}`}
+                                                    sx={{ width: "100%", height: 500, objectFit: "contain", borderRadius: 1.4, border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`, display: "block" }}
+                                                />
+                                            </motion.div>
+                                        </AnimatePresence>
+
+                                        {/* Prev button */}
+                                        {caseImages.length > 1 && (
+                                            <Box
+                                                onClick={goPrev}
+                                                sx={{
+                                                    position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)",
+                                                    width: 36, height: 36, borderRadius: "50%",
+                                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                                    background: alpha(theme.palette.background.paper, 0.82),
+                                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+                                                    backdropFilter: "blur(6px)",
+                                                    cursor: "pointer",
+                                                    color: "text.primary",
+                                                    fontSize: "1rem",
+                                                    transition: "background 0.15s ease, border-color 0.15s ease, transform 0.15s ease",
+                                                    "&:hover": {
+                                                        background: alpha(theme.palette.primary.main, 0.18),
+                                                        borderColor: alpha(theme.palette.primary.main, 0.6),
+                                                        transform: "translateY(-50%) scale(1.1)",
+                                                    },
+                                                    userSelect: "none",
+                                                    zIndex: 2,
+                                                }}
+                                            >
+                                                ‹
+                                            </Box>
+                                        )}
+
+                                        {/* Next button */}
+                                        {caseImages.length > 1 && (
+                                            <Box
+                                                onClick={goNext}
+                                                sx={{
+                                                    position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+                                                    width: 36, height: 36, borderRadius: "50%",
+                                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                                    background: alpha(theme.palette.background.paper, 0.82),
+                                                    border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+                                                    backdropFilter: "blur(6px)",
+                                                    cursor: "pointer",
+                                                    color: "text.primary",
+                                                    fontSize: "1rem",
+                                                    transition: "background 0.15s ease, border-color 0.15s ease, transform 0.15s ease",
+                                                    "&:hover": {
+                                                        background: alpha(theme.palette.primary.main, 0.18),
+                                                        borderColor: alpha(theme.palette.primary.main, 0.6),
+                                                        transform: "translateY(-50%) scale(1.1)",
+                                                    },
+                                                    userSelect: "none",
+                                                    zIndex: 2,
+                                                }}
+                                            >
+                                                ›
+                                            </Box>
+                                        )}
+
+                                        {/* Slide counter badge */}
+                                        {caseImages.length > 1 && (
+                                            <Box sx={{
+                                                position: "absolute", bottom: 10, right: 10,
+                                                px: 1, py: 0.3, borderRadius: 99,
+                                                background: alpha(theme.palette.background.paper, 0.78),
+                                                border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
+                                                backdropFilter: "blur(6px)",
+                                                fontSize: "0.68rem", fontFamily: "'Space Mono', monospace",
+                                                color: "text.secondary", letterSpacing: "0.06em",
+                                                userSelect: "none",
+                                            }}>
+                                                {activeCaseImage + 1} / {caseImages.length}
+                                            </Box>
+                                        )}
                                     </Box>
-                                    <Box sx={{ mt: 0.8, display: "flex", gap: 0.6, justifyContent: "center" }}>
+
+                                    {/* Progress bar */}
+                                    {/* <Box sx={{ mt: 1, height: 3, borderRadius: 999, background: alpha(theme.palette.primary.main, 0.18), overflow: "hidden" }}>
+                                        <Box sx={{ width: `${caseProgress}%`, height: "100%", background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.accent.main})`, transition: progressTransition }} />
+                                    </Box> */}
+
+                                    {/* Dot indicators */}
+                                    <Box sx={{ mt: 0.8, display: "flex", gap: 0.6, justifyContent: "center", alignItems: "center" }}>
                                         {caseImages.map((_, imageIndex) => (
-                                            <Box key={`dot-${imageIndex}`} sx={{ width: imageIndex === activeCaseImage ? 14 : 6, height: 6, borderRadius: 99, background: imageIndex === activeCaseImage ? theme.palette.primary.main : alpha(theme.palette.primary.main, 0.35), transition: "all 0.2s ease" }} />
+                                            <Box
+                                                key={`dot-${imageIndex}`}
+                                                onClick={(e) => { e.stopPropagation(); goToImage(imageIndex); }}
+                                                sx={{
+                                                    width: imageIndex === activeCaseImage ? 14 : 6,
+                                                    height: 6, borderRadius: 99,
+                                                    background: imageIndex === activeCaseImage ? theme.palette.primary.main : alpha(theme.palette.primary.main, 0.35),
+                                                    transition: "all 0.2s ease",
+                                                    cursor: "pointer",
+                                                    "&:hover": { background: alpha(theme.palette.primary.main, 0.7) },
+                                                }}
+                                            />
                                         ))}
                                     </Box>
                                 </Box>
@@ -477,165 +614,63 @@ export default function TimelineItem({ item, index, isActive }) {
                         )}
                     </AnimatePresence>
 
+                    {/* ── Mobile bottom sheet ── */}
                     <AnimatePresence>
-                        {isSmallDevice && openCasePreview &&
-
+                        {isSmallDevice && openCasePreview && (
                             <>
-                                {/* Backdrop */}
                                 <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 0.4 }}
-                                    exit={{ opacity: 0 }}
+                                    initial={{ opacity: 0 }} animate={{ opacity: 0.4 }} exit={{ opacity: 0 }}
                                     onClick={() => setOpenCasePreview(false)}
-                                    style={{
-                                        position: "fixed",
-                                        inset: 0,
-                                        background: "#000",
-                                        zIndex: 19999,
-                                    }}
+                                    style={{ position: "fixed", inset: 0, background: "#000", zIndex: 19999 }}
                                 />
-
-                                {/* Bottom Sheet */}
                                 <motion.div
-                                    initial={{ y: "100%" }}
-                                    animate={{ y: 0 }}
-                                    exit={{ y: "100%" }}
+                                    initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                                     transition={{ duration: 0.35, ease: "easeOut" }}
-                                    style={{
-                                        position: "fixed",
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        zIndex: 20000,
-                                    }}
+                                    style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 20000 }}
                                 >
-                                    <Box
-                                        sx={{
-                                            borderTopLeftRadius: 16,
-                                            borderTopRightRadius: 16,
-                                            p: 1.2,
-                                            background: theme.palette.background.paper,
-                                            boxShadow: "0 -10px 40px rgba(0,0,0,0.25)",
-                                        }}
-                                    >
-                                        {/* Drag Handle */}
-                                        <Box
-                                            sx={{
-                                                width: 40,
-                                                height: 4,
-                                                borderRadius: 99,
-                                                background: "grey.500",
-                                                mx: "auto",
-                                                mb: 1,
-                                            }}
-                                        />
-
-                                        {/* Swipe + Image */}
+                                    <Box sx={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, p: 1.2, background: theme.palette.background.paper, boxShadow: "0 -10px 40px rgba(0,0,0,0.25)" }}>
+                                        <Box sx={{ width: 40, height: 4, borderRadius: 99, background: "grey.500", mx: "auto", mb: 1 }} />
                                         <motion.div
                                             drag="x"
                                             dragConstraints={{ left: 0, right: 0 }}
                                             onDragEnd={(e, info) => {
-                                                if (info.offset.x < -50) {
-                                                    setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
-                                                } else if (info.offset.x > 50) {
-                                                    setActiveCaseImage((prev) =>
-                                                        prev === 0 ? caseImages.length - 1 : prev - 1
-                                                    );
-                                                }
+                                                if (info.offset.x < -50) setActiveCaseImage((prev) => (prev + 1) % caseImages.length);
+                                                else if (info.offset.x > 50) setActiveCaseImage((prev) => prev === 0 ? caseImages.length - 1 : prev - 1);
                                             }}
                                         >
                                             <AnimatePresence mode="wait">
                                                 <motion.img
                                                     key={activeCaseImage}
                                                     src={caseImages[activeCaseImage]}
-                                                    initial={{ opacity: 0, x: 40 }}
-                                                    animate={{ opacity: 1, x: 0 }}
-                                                    exit={{ opacity: 0, x: -40 }}
+                                                    initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
                                                     transition={{ duration: 0.35 }}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: 220,
-                                                        objectFit: "contain",
-                                                        borderRadius: 12,
-                                                    }}
+                                                    style={{ width: "100%", height: 220, objectFit: "contain", borderRadius: 12 }}
                                                 />
                                             </AnimatePresence>
                                         </motion.div>
-
-                                        {/* Progress */}
-                                        <Box
-                                            sx={{
-                                                mt: 1,
-                                                height: 4,
-                                                borderRadius: 999,
-                                                background: "grey.300",
-                                                overflow: "hidden",
-                                            }}
-                                        >
-                                            <Box
-                                                sx={{
-                                                    width: `${caseProgress}%`,
-                                                    height: "100%",
-                                                    background: theme.palette.primary.main,
-                                                    transition: "width 0.2s linear",
-                                                }}
-                                            />
+                                        <Box sx={{ mt: 1, height: 4, borderRadius: 999, background: "grey.300", overflow: "hidden" }}>
+                                            <Box sx={{ width: `${caseProgress}%`, height: "100%", background: theme.palette.primary.main, transition: "width 0.2s linear" }} />
                                         </Box>
-
-                                        {/* Dots */}
-                                        <Box
-                                            sx={{
-                                                mt: 1,
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                gap: 0.6,
-                                            }}
-                                        >
+                                        <Box sx={{ mt: 1, display: "flex", justifyContent: "center", gap: 0.6 }}>
                                             {caseImages.map((_, i) => (
-                                                <Box
-                                                    key={i}
-                                                    sx={{
-                                                        width: i === activeCaseImage ? 14 : 6,
-                                                        height: 6,
-                                                        borderRadius: 99,
-                                                        background:
-                                                            i === activeCaseImage
-                                                                ? theme.palette.primary.main
-                                                                : "grey.400",
-                                                        transition: "all 0.2s ease",
-                                                    }}
-                                                />
+                                                <Box key={i} sx={{ width: i === activeCaseImage ? 14 : 6, height: 6, borderRadius: 99, background: i === activeCaseImage ? theme.palette.primary.main : "grey.400", transition: "all 0.2s ease" }} />
                                             ))}
                                         </Box>
-
-                                        {/* Close */}
-                                        <Box
-                                            onClick={() => setOpenCasePreview(false)}
-                                            sx={{
-                                                mt: 1.2,
-                                                textAlign: "center",
-                                                fontSize: "0.8rem",
-                                                color: "primary.main",
-                                                cursor: "pointer",
-                                            }}
-                                        >
+                                        <Box onClick={() => setOpenCasePreview(false)} sx={{ mt: 1.2, textAlign: "center", fontSize: "0.8rem", color: "primary.main", cursor: "pointer" }}>
                                             Close
                                         </Box>
                                     </Box>
                                 </motion.div>
-                            </>}
+                            </>
+                        )}
                     </AnimatePresence>
                 </Box>
 
-                {/* VISUAL SIDE — fills the full flex column, orb + constellation centred within */}
+                {/* VISUAL SIDE */}
                 <Box
                     sx={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
                         order: { xs: 0, md: isLeft ? 3 : 1 },
-                        // Let the column breathe — min height matches the card side
                         minHeight: { md: 400 },
                         position: "relative",
                     }}

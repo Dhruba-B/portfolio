@@ -9,14 +9,19 @@ import javaLogo from "../../assets/icons/java.svg";
 import springLogo from "../../assets/icons/spring.png";
 import mysqlLogo from "../../assets/icons/sql.png";
 import gitLogo from "../../assets/icons/git.png";
+import nodeLogo from "../../assets/icons/node.png";
+import redisLogo from "../../assets/icons/redis.png";
+import ollamaLogo from "../../assets/icons/ollama.png";
+import postgresqlLogo from "../../assets/icons/Postgresql.svg.png";
+import dockerLogo from "../../assets/icons/docker.png";
 
 const skillGroups = [
   {
     title: "Frontend",
     spotlight: [{ name: "React + React Native", logo: reactLogo }],
     summary:
-      "Build scalable, component-driven interfaces with responsive architecture, reusable UI patterns, and performance-focused rendering across web and mobile.",
-    skills: ["Material UI (MUI)", "JavaScript ES6+", "Responsive UI", "State Management", "Design Systems"],
+      "Build scalable, component-driven interfaces with responsive architecture, reusable UI patterns, drag-and-drop workflows, and real-time product feedback.",
+    skills: ["Material UI (MUI)", "JavaScript ES6+", "Responsive UI Engineering", "Drag & Drop Systems", "State Management", "Real-time UI"],
     accentColor: "#61DAFB",
   },
   {
@@ -26,17 +31,44 @@ const skillGroups = [
       { name: "Java", logo: javaLogo },
     ],
     summary:
-      "Design secure, production-grade backend services with REST API contracts, modular service boundaries, and multi-tenant controls for configurable delivery.",
-    skills: ["REST APIs", "JPQL", "Native SQL", "Multi-tenant Architecture", "DTO-first APIs"],
+      "Design production-grade backend services with REST API contracts, modular service boundaries, socket-driven collaboration, and scalable processing flows.",
+    skills: ["REST APIs", "Express.js", "WebSockets", "Distributed Systems", "Queue Architectures", "Worker Systems"],
     accentColor: "#6DB33F",
   },
   {
-    title: "Database",
-    spotlight: [{ name: "MySQL", logo: mysqlLogo }],
+    title: "Scalable Backend Systems",
+    spotlight: [
+      { name: "Node.js", logo: nodeLogo },
+      { name: "Redis", logo: redisLogo },
+    ],
     summary:
-      "Implemented schema design and query optimization strategies for reliable transactional workflows, high-read reporting, and maintainable relational models.",
-    skills: ["Schema Design", "Query Optimisation", "Indexing Strategy", "Data Modeling"],
+      "Build scalable backend architectures powering real-time collaboration, distributed job processing, worker orchestration, and resilient API-driven systems.",
+    skills: [
+      "REST APIs", "Express.js", "WebSockets", "Redis Queues", "Real-time Communication", "Scalable Processing Pipelines",
+    ],
+    accentColor: "#DC382D",
+  },
+  {
+    title: "Database",
+    spotlight: [
+      { name: "MySQL", logo: mysqlLogo },
+      { name: "PostgreSQL", logo: postgresqlLogo }
+    ],
+    summary:
+      "Implemented schema design and query optimization strategies for transactional workflows, reporting, and queue-backed system state.",
+    skills: ["PostgreSQL", "MySQL", "Redis", "Schema Design", "Query Optimisation", "Data Modeling"],
     accentColor: "#61DAFB",
+  },
+
+  {
+    title: "Distributed AI Infrastructure",
+    spotlight: [
+      { name: "Ollama", logo: ollamaLogo },
+      { name: "Redis", logo: redisLogo },
+    ],
+    summary: "Engineered a distributed AI execution platform with specialized worker orchestration, local LLM inference, capability-based scheduling, realtime observability, and resilient AI processing pipelines.",
+    skills: ["AI Worker Orchestration", "Local LLM Inference", "Ollama", "Capability-Based Routing", "Redis Coordination", "Background AI Processing"],
+    accentColor: "#A78BFA",
   },
   {
     title: "AI & LLMs",
@@ -47,7 +79,18 @@ const skillGroups = [
     summary:
       "Integrated LLM APIs into user workflows to convert natural-language prompts into validated outputs with safety checks, schema guards, and operational reliability.",
     skills: ["LLM API Integration", "Natural Language to SQL", "Prompt Engineering", "Validation Pipelines"],
-    accentColor: "#A78BFA",
+    accentColor: "#fcf967",
+  },
+  {
+    title: "DevOps & Infra",
+    spotlight: [
+      { name: "Git", logo: gitLogo },
+      { name: "Docker", logo: dockerLogo },
+    ],
+    summary:
+      "Shape delivery-ready systems with containerized services, background processing, observable worker flows, and architecture choices that keep growth manageable.",
+    skills: ["Docker", "Redis", "Scalable Architecture", "Background Job Processing", "System Design"],
+    accentColor: "#38BDF8",
   },
   {
     title: "Tooling",
@@ -57,9 +100,10 @@ const skillGroups = [
     ],
     summary:
       "Executed disciplined delivery workflows with version control, API validation, integration testing support, and repeatable release readiness for client environments.",
-    skills: ["Selenium (Python)", "Ngrok", "White-label Deployment", "Release Workflow", "Code Review Standards"],
+    skills: ["Selenium (Python)", "Postman", "Ngrok", "White-label Deployment", "Release Workflow", "CI/CD Pipelines", "Code Review Standards"],
     accentColor: "#F97316",
   },
+
 ];
 
 // ─── LogoOrb ──────────────────────────────────────────────────────────────────
@@ -182,11 +226,11 @@ export default function TechCredibilityPanel() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            Core Strengths Across Product Delivery
+            Core Strengths Across Product Systems
           </Typography>
           <Typography sx={{ mb: 3, color: "text.secondary", maxWidth: 860 }}>
-            Production-focused capability coverage across frontend engineering, backend services, database
-            systems, AI-assisted features, and release tooling.
+            Production-focused capability coverage across frontend engineering, backend services, real-time
+            workflows, distributed processing, database systems, AI-assisted features, and release tooling.
           </Typography>
         </motion.div>
 
@@ -218,8 +262,8 @@ export default function TechCredibilityPanel() {
                   p: { xs: 2.2, md: 2.6 },
                   borderRadius: 3,
                   border: `1px solid ${hoveredCard === group.title
-                      ? alpha(group.accentColor, 0.42)
-                      : alpha(theme.palette.primary.main, 0.18)
+                    ? alpha(group.accentColor, 0.42)
+                    : alpha(theme.palette.primary.main, 0.18)
                     }`,
                   background: alpha(theme.palette.background.paper, 0.72),
                   backdropFilter: "blur(8px)",

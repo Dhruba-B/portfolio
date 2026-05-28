@@ -2,29 +2,17 @@ import {
     Box,
     Typography,
     Button,
-    Chip,
     useTheme,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useMemo, useRef } from "react";
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Constellations from "../../components/constellations/Constellations";
 import portrait1 from "../../assets/images/potrait_1.png";
-import reactLogo from "../../assets/react.svg";
-import jsLogo from "../../assets/icons/js.jpg";
-import javaLogo from "../../assets/icons/java.jpg";
-import springLogo from "../../assets/icons/spring.png";
-import mysqlLogo from "../../assets/icons/sql.png";
-import gitLogo from "../../assets/icons/git.png";
 
 export default function HeroSection() {
     const theme = useTheme();
     const ref = useRef(null);
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const parallaxX = useSpring(mouseX, { stiffness: 40, damping: 16 });
-    const parallaxY = useSpring(mouseY, { stiffness: 40, damping: 16 });
-    const auroraDriftY = useTransform(parallaxY, [-10, 10], [-10, 10]);
 
     const orbitalBodies = useMemo(
         () => [
@@ -35,21 +23,11 @@ export default function HeroSection() {
         ],
         []
     );
-    const constellationNodes = useMemo(
-        () =>
-            Array.from({ length: 18 }, (_, i) => ({
-                id: i,
-                x: 8 + ((i * 31) % 82),
-                y: 10 + ((i * 37) % 76),
-                size: i % 3 === 0 ? 4 : 3,
-            })),
-        []
-    );
     const quickMetrics = useMemo(
         () => [
             { label: "Experience", value: "3+ Years" },
-            { label: "Projects", value: "5+ Delivered" },
-            { label: "Delivery", value: "Frontend to Backend" },
+            { label: "Projects", value: "7+ Delivered" },
+            { label: "Focus", value: "Realtime + Systems" },
         ],
         []
     );
@@ -80,17 +58,6 @@ export default function HeroSection() {
                 overflow: "hidden",
                 flexDirection: { xs: "column", md: "row" },
                 textAlign: { xs: "center", md: "left" },
-            }}
-            onMouseMove={(event) => {
-                const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
-                const nx = ((event.clientX - left) / width - 0.5) * 16;
-                const ny = ((event.clientY - top) / height - 0.5) * 16;
-                mouseX.set(nx);
-                mouseY.set(ny);
-            }}
-            onMouseLeave={() => {
-                mouseX.set(0);
-                mouseY.set(0);
             }}
         >
             {/* 🔥 BACKGROUND GLOW */}
@@ -125,8 +92,8 @@ export default function HeroSection() {
             {/* STRUCTURED CONSTELLATION BACKGROUND */}
             <Constellations
                 yMid={yMid}
-                parallaxX={parallaxX}
-                auroraDriftY={auroraDriftY}
+                parallaxX={0}
+                auroraDriftY={0}
             />
 
 
@@ -251,8 +218,8 @@ export default function HeroSection() {
                         transition={{ delay: 0.2 }}
                     >
                         <Typography sx={{ mt: 3, color: "text.secondary", lineHeight: 1.8, fontSize: { xs: ".8rem", md: "1rem" } }}>
-                            I build complete product flows across the stack — from front-end UX to backend APIs, data design,
-                            and delivery workflows with clean version control practices.
+                            I build complete product flows across the stack - from polished front-end UX to backend APIs,
+                            real-time collaboration, data design, and scalable delivery workflows.
                         </Typography>
                     </motion.div>
 
@@ -335,10 +302,8 @@ export default function HeroSection() {
                                 }}
                             />
                         </Box>
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 34, repeat: Infinity, ease: "linear" }}
-                            style={{
+                        <Box
+                            sx={{
                                 position: "absolute",
                                 width: "95%",
                                 height: "95%",
@@ -347,19 +312,14 @@ export default function HeroSection() {
                             }}
                         />
                         {orbitalBodies.map((body, index) => (
-                            <motion.div
+                            <Box
                                 key={body.id}
-                                animate={{ y: [0, -4, 0], x: [0, 2, 0] }}
-                                transition={{
-                                    duration: 10 + index * 1.4,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
-                                style={{
+                                sx={{
                                     position: "absolute",
                                     top: body.top,
                                     left: body.left,
                                     transform: "translate(-50%, -50%)",
+                                    opacity: index % 2 === 0 ? 0.92 : 0.78,
                                 }}
                             >
                                 <Box
@@ -388,14 +348,8 @@ export default function HeroSection() {
                                     }}
                                 />
                                 {body.moon && (
-                                    <motion.div
-                                        animate={{ rotate: 360 }}
-                                        transition={{
-                                            duration: 12 + index * 0.8,
-                                            repeat: Infinity,
-                                            ease: "linear",
-                                        }}
-                                        style={{
+                                    <Box
+                                        sx={{
                                             position: "absolute",
                                             inset: -10,
                                             borderRadius: "50%",
@@ -413,20 +367,14 @@ export default function HeroSection() {
                                                 boxShadow: `0 0 10px ${alpha("#e2e8f0", 0.75)}`,
                                             }}
                                         />
-                                    </motion.div>
+                                    </Box>
                                 )}
-                            </motion.div>
+                            </Box>
                         ))}
                         {[0, 1, 2].map((star) => (
-                            <motion.div
+                            <Box
                                 key={`hero-star-${star}`}
-                                animate={{ opacity: [0.25, 0.95, 0.25], scale: [0.85, 1.2, 0.85] }}
-                                transition={{
-                                    duration: 3.4 + star * 1.2,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
-                                style={{
+                                sx={{
                                     position: "absolute",
                                     top: star === 0 ? "10%" : star === 1 ? "62%" : "86%",
                                     left: star === 0 ? "58%" : star === 1 ? "12%" : "64%",
@@ -435,6 +383,7 @@ export default function HeroSection() {
                                     borderRadius: "50%",
                                     background: "rgba(224,231,255,0.95)",
                                     boxShadow: "0 0 10px rgba(224,231,255,0.75)",
+                                    opacity: star === 1 ? 0.62 : 0.82,
                                 }}
                             />
                         ))}

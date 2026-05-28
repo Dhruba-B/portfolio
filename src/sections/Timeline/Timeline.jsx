@@ -7,24 +7,24 @@ import ProgressTimeline from "../../components/timeline/ProgressTimeline";
 
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import WidgetsIcon from "@mui/icons-material/Widgets";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import MobileFriendlyIcon from "@mui/icons-material/MobileFriendly";
 import AutoAwesomeTwoToneIcon from "@mui/icons-material/AutoAwesomeTwoTone";
 import SchemaTwoToneIcon from "@mui/icons-material/SchemaTwoTone";
-import InsightsIcon from "@mui/icons-material/Insights";
+import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
+import HubTwoToneIcon from "@mui/icons-material/HubTwoTone";
 import formImage from "../../assets/images/formImage.png";
-import portrait1 from "../../assets/images/potrait_1.png";
-import portrait2 from "../../assets/images/potrait_2.png";
 import chatImage_1 from "../../assets/images/chatImage_1.png";
 import chatImage_2 from "../../assets/images/chatImage_2.png";
 import chatImage_load from "../../assets/images/chatImage_load.png";
 import widget_1 from "../../assets/images/widget_1.png";
 import widget_2 from "../../assets/images/widget_2.png";
-import medepal_1 from "../../assets/images/medepal_1.png";
-import medepal_2 from "../../assets/images/medepal_2.png";
-import medepal_3 from "../../assets/images/medepal_3.png";
-import workflowGif from "../../assets/images/programming-language.gif";
+import collabflow_1 from "../../assets/images/collabflow1.png";
+import collabflow_2 from "../../assets/images/collabflow2.png";
+import collabflow_3 from "../../assets/images/collabflow3.png";
+import pulsequeue_1 from "../../assets/images/pulsequeue_1.png";
+import pulsequeue_2 from "../../assets/images/pulsequeue_2.png";
+import pulsequeue_3 from "../../assets/images/pulsequeue_3.png";
+import pulsequeue_4 from "../../assets/images/pulsequeue_4.png";
 
 const data = [
     {
@@ -42,6 +42,20 @@ const data = [
         visualType: "data"
     },
     {
+        id: "nomura",
+        title: "Nomura / Mitsubishi Trust Bank",
+        period: "Multi-Tenant Financial Reconciliation System",
+        subtitle: "Java + Spring Batch in regulated production",
+        stack: ["Java", "Spring Batch", "Enterprise Processes"],
+        highlights: [
+            "Contributed to trade and ledger settlement reconciliation batch workflows.",
+            "Worked on tenant-isolated processing with client-specific configurations.",
+            "Delivered under fintech-grade compliance and enterprise review pipelines.",
+        ],
+        icon: AccountBalanceIcon,
+        visualType: "infra"
+    },
+    {
         id: "medepal",
         title: "React Native Healthcare App / Web",
         period: "MEDePAL + MHCP",
@@ -55,51 +69,85 @@ const data = [
         icon: HealthAndSafetyIcon,
         visualType: "health"
     },
+    // {
+    //     id: "key-projects-mobile-and-fintech",
+    //     title: "White-label Mobile Delivery",
+    //     period: "MAMATA, Nursing App,",
+    //     subtitle: "Client-specific variants from a shared core",
+    //     stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
+    //     highlights: [
+    //         "Engineered MAMATA as a white-label extension of MEDePAL, enabling rapid client-specific deployments from a shared core.",
+    //         "Translated a single codebase into branded, feature-adaptive mobile variants through modular architecture",
+    //     ],
+    //     caseStudy: {
+    //         title: "White-labeled product Delivery",
+    //         summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
+    //         images: [medepal_1, medepal_2, medepal_3],
+    //     },
+    //     icon: MobileFriendlyIcon,
+    //     visualType: "mobile"
+    // },
+    // {
+    //     id: "UI_Architecture",
+    //     title: "Scalable, Component-Driven UI Architecture",
+    //     period: "Platform Modernization",
+    //     subtitle: "Shared React + MUI design system",
+    //     stack: ["React", "MUI", "Component Architecture"],
+    //     highlights: [
+    //         "Refactored legacy screens into a shared React + MUI component library.",
+    //         "Reduced duplication and enforced UI consistency across modules.",
+    //         "Set scalable front-end standards for multi-tenant products.",
+    //     ],
+    //     icon: WidgetsIcon,
+    //     visualType: "system"
+    // },
     {
-        id: "key-projects-mobile-and-fintech",
-        title: "White-label Mobile Delivery",
-        period: "MAMATA, Nursing App,",
-        subtitle: "Client-specific variants from a shared core",
-        stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
+        id: "collabflow",
+        title: "CollabFlow",
+        feature: true,
+        period: "Real-time Collaboration Platform",
+        subtitle: "Kanban-style workflow management with socket-driven team updates",
+        stack: ["React", "Node.js", "Express", "WebSockets", "PostgreSQL", "MUI"],
         highlights: [
-            "Engineered MAMATA as a white-label extension of MEDePAL, enabling rapid client-specific deployments from a shared core.",
-            "Translated a single codebase into branded, feature-adaptive mobile variants through modular architecture",
+            "Built a project workflow experience with drag-and-drop task movement, team collaboration, and mobile-responsive boards.",
+            "Used socket-driven real-time sync so task state, notifications, and board activity stay consistent across active sessions.",
+            "Structured the React frontend around reusable board, task, snackbar, and collaboration primitives for maintainable growth.",
         ],
         caseStudy: {
-            title: "White-labeled product Delivery",
-            summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
-            images: [medepal_1, medepal_2, medepal_3],
+            title: "Realtime Board Architecture",
+            summary: "Kanban UI, socket events, API-backed persistence, and notification feedback working as one collaborative product loop.",
+            images: [collabflow_1, collabflow_2, collabflow_3],
         },
-        icon: MobileFriendlyIcon,
-        visualType: "mobile"
+        links: {
+            github: "https://github.com/Dhruba-B/collabflow",
+            demo: "https://collabflow-cyan.vercel.app/",
+        },
+        icon: AccountTreeTwoToneIcon,
+        visualType: "system",
     },
     {
-        id: "UI_Architecture",
-        title: "Scalable, Component-Driven UI Architecture",
-        period: "Platform Modernization",
-        subtitle: "Shared React + MUI design system",
-        stack: ["React", "MUI", "Component Architecture"],
+        id: "pulsequeue",
+        title: "PulseQueue",
+        feature: true,
+        period: "Distributed Queue + Worker System",
+        subtitle: "Redis-backed job processing with orchestration, retries, and live queue analytics",
+        stack: ["Node.js", "Redis", "Express", "React", "Docker", "Distributed Systems"],
         highlights: [
-            "Refactored legacy screens into a shared React + MUI component library.",
-            "Reduced duplication and enforced UI consistency across modules.",
-            "Set scalable front-end standards for multi-tenant products.",
+            "Designed a Redis-backed queue with worker orchestration, priority handling, and retry mechanics for resilient background jobs.",
+            "Built dashboard views for real-time worker health, job throughput, queue depth, and processing visualization.",
+            "Modeled the backend for scalable processing boundaries with clear producer, queue, worker, and monitoring responsibilities.",
         ],
-        icon: WidgetsIcon,
-        visualType: "system"
-    },
-    {
-        id: "nomura",
-        title: "Nomura / Mitsubishi Trust Bank",
-        period: "Multi-Tenant Financial Reconciliation System",
-        subtitle: "Java + Spring Batch in regulated production",
-        stack: ["Java", "Spring Batch", "Enterprise Processes"],
-        highlights: [
-            "Contributed to trade and ledger settlement reconciliation batch workflows.",
-            "Worked on tenant-isolated processing with client-specific configurations.",
-            "Delivered under fintech-grade compliance and enterprise review pipelines.",
-        ],
-        icon: AccountBalanceIcon,
-        visualType: "infra"
+        caseStudy: {
+            title: "Queue Processing Architecture",
+            summary: "Producer APIs, Redis queue state, worker execution, retry policy, and analytics surfaced through a monitoring dashboard.",
+            images: [pulsequeue_1, pulsequeue_2, pulsequeue_3, pulsequeue_4],
+        },
+        links: {
+            github: "https://github.com/Dhruba-B/pulsequeue",
+            demo: "https://pulsequeue-olive.vercel.app/",
+        },
+        icon: HubTwoToneIcon,
+        visualType: "infra",
     },
     {
         id: "key-project-query-builder",
@@ -151,7 +199,7 @@ export default function Timeline() {
     const refs = useRef([]);
     const stars = useMemo(
         () =>
-            Array.from({ length: 95 }, (_, i) => {
+            Array.from({ length: 32 }, (_, i) => {
                 const x = (i * 37) % 100;
                 const y = (i * 53) % 100;
                 const size = 1.5 + ((i * 17) % 16) / 10;
@@ -196,7 +244,9 @@ export default function Timeline() {
         <Box
             sx={{
                 position: "relative",
-                overflow: "visible",
+                overflow: "hidden",
+                overflowX: "hidden",
+                pb: 10,
             }}
         >
             <Box
@@ -208,40 +258,42 @@ export default function Timeline() {
                     background: `radial-gradient(circle at 50% 0%, ${alpha(theme.palette.primary.main, 0.12)} 0%, transparent 55%)`,
                 }}
             />
-            {stars.map((star) => (
-                <motion.div
-                    key={star.id}
-                    animate={{
-                        opacity: [0.2, 0.85, 0.2],
-                        scale: [0.9, 1.25, 0.9],
-                        y: [0, -3, 0],
-                    }}
-                    transition={{
-                        duration: star.duration,
-                        delay: star.delay,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                    style={{
-                        position: "absolute",
-                        left: `${star.x}%`,
-                        top: `${star.y}%`,
-                        width: star.size,
-                        height: star.size,
-                        borderRadius: "50%",
-                        background:
-                            star.id % 4 === 0
-                                ? alpha(theme.palette.accent.main, 0.95)
-                                : alpha("#e0e7ff", 0.9),
-                        boxShadow:
-                            star.id % 4 === 0
-                                ? `0 0 10px ${alpha(theme.palette.accent.main, 0.75)}`
-                                : "0 0 8px rgba(224,231,255,0.7)",
-                        zIndex: 0,
-                        pointerEvents: "none",
-                    }}
-                />
-            ))}
+            {stars.map((star) => {
+                const starStyle = {
+                    position: "absolute",
+                    left: `${star.x}%`,
+                    top: `${star.y}%`,
+                    width: star.size,
+                    height: star.size,
+                    borderRadius: "50%",
+                    background:
+                        star.id % 4 === 0
+                            ? alpha(theme.palette.accent.main, 0.78)
+                            : alpha("#e0e7ff", 0.58),
+                    boxShadow:
+                        star.id % 4 === 0
+                            ? `0 0 8px ${alpha(theme.palette.accent.main, 0.42)}`
+                            : "0 0 6px rgba(224,231,255,0.34)",
+                    zIndex: 0,
+                    pointerEvents: "none",
+                };
+
+                return star.id < 10 ? (
+                    <motion.div
+                        key={star.id}
+                        animate={{ opacity: [0.24, 0.62, 0.24] }}
+                        transition={{
+                            duration: star.duration + 3,
+                            delay: star.delay,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                        style={starStyle}
+                    />
+                ) : (
+                    <Box key={star.id} sx={starStyle} />
+                );
+            })}
             <ProgressTimeline
                 items={data}
                 activeIndex={activeIndex}

@@ -1,7 +1,7 @@
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
-import { useRef, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { renderAICore, renderDataCore, renderDefaultCore, renderHealthCore, renderInfraCore, renderMobileCore, renderSystemCore } from "../common/RenderVisual";
 
 // ─── Constellation helpers ────────────────────────────────────────────────────
@@ -22,10 +22,12 @@ function polar(cx, cy, angleDeg, r) {
 // ─── FloatingTag ──────────────────────────────────────────────────────────────
 function FloatingTag({ label, index, hue, delay }) {
     return (
-        <motion.div
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 3.8 + index * 0.65, repeat: Infinity, ease: "easeInOut", delay }}
-            style={{ pointerEvents: "none" }}
+        <Box
+            sx={{
+                pointerEvents: "none",
+                transform: index % 2 === 0 ? "translateY(-2px)" : "translateY(2px)",
+                transition: `opacity 0.3s ease ${delay}s`,
+            }}
         >
             <Box
                 sx={{
@@ -47,7 +49,7 @@ function FloatingTag({ label, index, hue, delay }) {
                     {label}
                 </Typography>
             </Box>
-        </motion.div>
+        </Box>
     );
 }
 
@@ -66,8 +68,6 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
     // User's original sizes
     const orbSize = isSmall ? 200 : 280;
     const shellSize = isSmall ? 70 : 100;
-    const iconFontSize = isSmall ? 26 : 34;
-
     // Scene expands beyond the orb to give tags room
     const sceneW = isSmall ? orbSize : orbSize + 140;
     const sceneH = isSmall ? orbSize : orbSize + 120;
@@ -76,25 +76,29 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
     const orbR = orbSize / 2;
 
     // User's original stable stars
-    const stars = useRef(
-        Array.from({ length: 22 }, (_, i) => ({
+    const stars = useMemo(
+        () =>
+        Array.from({ length: 10 }, (_, i) => ({
             x: Math.sin(i * 43.7) * 50 + 50,
             y: Math.cos(i * 73.1) * 50 + 50,
             sz: 0.9 + Math.abs(Math.sin(i * 17.3)) * 1.8,
             op: 0.18 + Math.abs(Math.sin(i * 5.1)) * 0.32,
             hue: (hue1 + i * 11) % 360,
-        }))
-    ).current;
+        })),
+        [hue1]
+    );
 
     // User's original ring configs
     const rings = [
-        { frac: 0.57, duration: "14s", ccw: false, opacity: 0.28 },
-        { frac: 0.72, duration: "22s", ccw: true, opacity: 0.16 },
-        { frac: 0.88, duration: "34s", ccw: false, opacity: 0.10 },
+        { frac: 0.58, duration: "42s", ccw: false, opacity: 0.24 },
+        { frac: 0.84, duration: "58s", ccw: true, opacity: 0.12 },
     ];
 
     // Constellation — only on desktop, up to 5 tags
-    const activeTags = isSmall ? [] : tags.slice(0, TAG_LAYOUT.length);
+    const activeTags = useMemo(
+        () => (isSmall ? [] : tags.slice(0, TAG_LAYOUT.length)),
+        [isSmall, tags]
+    );
 
     const lines = useMemo(() => activeTags.map((_, i) => {
         const layout = TAG_LAYOUT[i];
@@ -103,7 +107,7 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
         const midPt = polar(cx, cy, layout.angle, orbR + (totalR - orbR) * 0.48);
         const tagPt = polar(cx, cy, layout.angle, totalR);
         return { edgePt, midPt, tagPt, hue: (hue1 + i * 42) % 360, layout };
-    }), [activeTags.length, cx, cy, orbR, hue1]);
+    }), [activeTags, cx, cy, orbR, hue1]);
 
     function getCoreRenderer(type) {
         const map = {
@@ -258,7 +262,7 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
                             borderTopColor: alpha(`hsl(${(hue1 + i * 30) % 360}, 75%, 60%)`, ring.opacity * 1.5),
                             borderRightColor: alpha(`hsl(${(hue1 + i * 30) % 360}, 55%, 45%)`, ring.opacity),
                             zIndex: 2,
-                            animation: `${kwName} ${ring.duration} linear infinite`,
+                            animation: hovered ? `${kwName} ${ring.duration} linear infinite` : "none",
                             "@keyframes cosmicSpinCw": { to: { transform: "rotate(360deg)" } },
                             "@keyframes cosmicSpinCcw": { to: { transform: "rotate(-360deg)" } },
                         }} />
@@ -274,16 +278,14 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
                         border: `1.5px solid ${alpha(`hsl(${hue1}, 90%, 70%)`, 0.35)}`,
                         boxShadow: `0 0 16px ${alpha(`hsl(${hue1}, 90%, 70%)`, 0.18)}`,
                         zIndex: 3,
-                        animation: "cosmicSpinCcw 22s linear infinite",
+                        animation: hovered ? "cosmicSpinCcw 34s linear infinite" : "none",
                         "@keyframes cosmicSpinCcw": { to: { transform: "rotate(-360deg)" } },
                     }} />
                 )}
 
                 {/* ── Ambient glow (user's original) ── */}
-                <motion.div
-                    animate={{ scale: [1, 1.18, 1], opacity: [0.12, 0.22, 0.12] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    style={{
+                <Box
+                    sx={{
                         position: "absolute",
                         width: orbSize * 0.38,
                         height: orbSize * 0.38,
@@ -292,22 +294,18 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
                         filter: "blur(16px)",
                         zIndex: 3,
                         pointerEvents: "none",
+                        opacity: hovered ? 0.2 : 0.14,
+                        transform: hovered ? "scale(1.08)" : "scale(1)",
+                        transition: "opacity 0.35s ease, transform 0.35s ease",
                     }}
                 />
 
                 {/* ── Icon shell (user's original) ── */}
-                <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{
-                        duration: 5.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                >
+                <Box>
                     <motion.div
                         animate={{
-                            y: hovered ? -10 : 0,
-                            scale: hovered ? 1.08 : 1,
+                            y: hovered ? -5 : 0,
+                            scale: hovered ? 1.04 : 1,
                         }}
                         transition={{
                             type: "spring",
@@ -350,7 +348,7 @@ export default function CosmicIconVisual({ Icon, index, feature, tags = [], visu
                             {getCoreRenderer(visualType)({ hue1, hue2, hue3, Icon, hovered })}
                         </Box>
                     </motion.div>
-                </motion.div>
+                </Box>
                 {/* ── Index badge (user's original) ── */}
                 <Typography sx={{
                     position: "absolute",
