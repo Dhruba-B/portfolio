@@ -1,15 +1,16 @@
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { motion } from "framer-motion";
 
 export default function ProgressTimeline({ items, activeIndex, onClick }) {
-    const nodeSize = 14;
+    const nodeSize = 21;
     const nodeGap = 16;
-    const trackHeight = Math.max((items.length - 1) * (nodeSize + nodeGap), 0);
-    const activeProgress = Math.min(activeIndex, items.length - 1) * (nodeSize + nodeGap);
-
+    const trackHeight = Math.max((items.length - 1) * (nodeSize + nodeGap), 0) + nodeSize;
+    const activeProgress = Math.min(activeIndex, items.length - 1) * (nodeSize + nodeGap) + nodeSize / 2;
     return (
         <Box
+            component="nav"
+            aria-label="Page sections"
             sx={{
                 position: "fixed",
                 left: { md: 22, lg: 30 },
@@ -83,37 +84,65 @@ export default function ProgressTimeline({ items, activeIndex, onClick }) {
                             ease: "easeInOut",
                         }}
                     >
-                        <Box
-                        onClick={() => onClick(index)}
-                        title={item.title}
-                        sx={{
-                            width: 14,
-                            height: 14,
-                            borderRadius: "50%",
-                            mb: 2,
-                            cursor: "pointer",
-                            border: "1px solid",
-                            borderColor:
-                                index === activeIndex
-                                    ? "primary.main"
-                                    : "rgba(124,58,237,0.4)",
-                            backgroundColor:
-                                index === activeIndex
-                                    ? "primary.main"
-                                    : "background.paper",
-                            boxShadow:
-                                index === activeIndex
-                                    ? "0 0 16px rgba(124,58,237,0.65)"
-                                    : "none",
-                            transform:
-                                index === activeIndex ? "scale(1.2)" : "scale(1)",
-                            transition: "all 0.3s ease",
-                            "&:hover": {
-                                transform: "scale(1.2)",
-                                borderColor: "primary.main",
-                            },
-                        }}
-                    />
+                        <Tooltip
+                            title={item.title}
+                            placement="right"
+                            arrow
+                            slotProps={{
+                                tooltip: {
+                                    sx: {
+                                        bgcolor: "background.paper",
+                                        color: "text.primary",
+                                        border: "1px solid rgba(124,58,237,0.24)",
+                                        boxShadow: "0 10px 30px rgba(15,23,42,0.28)",
+                                        fontWeight: 700,
+                                        letterSpacing: "0.03em",
+                                    },
+                                },
+                                arrow: {
+                                    sx: {
+                                        color: "background.paper",
+                                    },
+                                },
+                            }}
+                        >
+                            <Box
+                                component="button"
+                                type="button"
+                                onClick={() => onClick(index)}
+                                aria-label={`Scroll to ${item.title}`}
+                                aria-current={index === activeIndex ? "true" : undefined}
+                                sx={{
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: "50%",
+                                    mb: index === items.length - 1 ? 0 : 2,
+                                    p: 0,
+                                    cursor: "pointer",
+                                    border: "1px solid",
+                                    borderColor:
+                                        index === activeIndex
+                                            ? "primary.main"
+                                            : "rgba(124,58,237,0.4)",
+                                    backgroundColor:
+                                        index === activeIndex
+                                            ? "primary.main"
+                                            : "background.paper",
+                                    boxShadow:
+                                        index === activeIndex
+                                            ? "0 0 16px rgba(124,58,237,0.65)"
+                                            : "none",
+                                    transform:
+                                        index === activeIndex ? "scale(1.2)" : "scale(1)",
+                                    transition: "all 0.3s ease",
+                                    "&:hover, &:focus-visible": {
+                                        transform: "scale(1.2)",
+                                        borderColor: "primary.main",
+                                        outline: "none",
+                                    },
+                                }}
+                            />
+                        </Tooltip>
                     </motion.div>
                 ))}
             </Box>

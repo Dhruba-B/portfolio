@@ -78,7 +78,7 @@ const skillGroups = [
     ],
     summary:
       "Integrated LLM APIs into user workflows to convert natural-language prompts into validated outputs with safety checks, schema guards, and operational reliability.",
-    skills: ["LLM API Integration", "Natural Language to SQL", "Prompt Engineering", "Validation Pipelines"],
+    skills: ["LLM API Integration", "Agentic AI Tools (Codex)", "Natural Language to SQL", "Prompt Engineering", "Validation Pipelines"],
     accentColor: "#fcf967",
   },
   {
@@ -205,7 +205,11 @@ export default function TechCredibilityPanel() {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
-    <Box sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 8, md: 10 } }}>
+    <Box
+      id="tech"
+      component="section"
+      sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 8, md: 10 } }}
+    >
       <Box sx={{ maxWidth: 1180, mx: "auto", textAlign: "left" }}>
 
         {/* Header */}
@@ -352,7 +356,7 @@ export default function TechCredibilityPanel() {
                 </Box>
 
                 {/* Skill chips */}
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.9 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.2, }}>
                   {group.skills.map((skill, skillIndex) => (
                     <motion.div
                       key={skill}

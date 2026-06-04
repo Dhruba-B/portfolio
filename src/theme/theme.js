@@ -19,6 +19,7 @@ const base = createTheme({
 
         accent: {
             main: "#4FE7F2",
+            secondary: "#ffc13c",
         },
 
         text: {

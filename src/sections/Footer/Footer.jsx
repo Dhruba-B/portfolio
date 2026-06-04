@@ -39,6 +39,7 @@ export default function Footer() {
       }}
     >
       <Box
+
         sx={{
           position: "absolute",
           top: -120,
@@ -90,6 +91,7 @@ export default function Footer() {
 
       <Box sx={{ position: "relative", zIndex: 1, maxWidth: 1200, mx: "auto" }}>
         <Typography
+              id="contact"
           variant="overline"
           sx={{ letterSpacing: "0.1em", color: "text.secondary" }}
         >

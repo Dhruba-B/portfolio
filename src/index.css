@@ -61,6 +61,15 @@ body {
   margin: 0;
 }
 
+#hero,
+#tech,
+#experience,
+#projects,
+#snapshot,
+#contact {
+  scroll-margin-top: 96px;
+}
+
 #root {
   /* width: 1126px; */
   max-width: 100%;

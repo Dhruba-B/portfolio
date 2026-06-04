@@ -4,18 +4,26 @@ import Lenis from "@studio-freight/lenis";
 export default function SmoothScrollProvider({ children }) {
     useEffect(() => {
         const lenis = new Lenis({
-            smooth: true,
+            smoothWheel: true,
             lerp: 0.08,
         });
+        let frameId;
+        window.__portfolioLenis = lenis;
 
         function raf(time) {
             lenis.raf(time);
-            requestAnimationFrame(raf);
+            frameId = requestAnimationFrame(raf);
         }
 
-        requestAnimationFrame(raf);
+        frameId = requestAnimationFrame(raf);
 
-        return () => lenis.destroy();
+        return () => {
+            cancelAnimationFrame(frameId);
+            if (window.__portfolioLenis === lenis) {
+                delete window.__portfolioLenis;
+            }
+            lenis.destroy();
+        };
     }, []);
 
     return children;

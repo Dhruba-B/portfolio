@@ -3,11 +3,8 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import TimelineItem from "../../components/timeline/TimelineItem";
-import ProgressTimeline from "../../components/timeline/ProgressTimeline";
 
-import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AutoAwesomeTwoToneIcon from "@mui/icons-material/AutoAwesomeTwoTone";
 import SchemaTwoToneIcon from "@mui/icons-material/SchemaTwoTone";
 import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
@@ -27,34 +24,6 @@ import pulsequeue_3 from "../../assets/images/pulsequeue_3.png";
 import pulsequeue_4 from "../../assets/images/pulsequeue_4.png";
 
 const data = [
-    {
-        id: "start",
-        title: "Full Stack Developer — Stellablue",
-        period: "Aug 2022 - Present",
-        subtitle: "MEDePAL, MHCP - Healthcare Platforms",
-        stack: ["React", "React Native", "Spring Boot", "MySQL"],
-        highlights: [
-            "Built and shipped production features across healthcare web and mobile platforms.",
-            "Worked across the full stack — from schema design to UI delivery.",
-            "Applied reusable architecture patterns to support multi-tenant scale.",
-        ],
-        icon: RocketLaunchIcon,
-        visualType: "data"
-    },
-    {
-        id: "nomura",
-        title: "Nomura / Mitsubishi Trust Bank",
-        period: "Multi-Tenant Financial Reconciliation System",
-        subtitle: "Java + Spring Batch in regulated production",
-        stack: ["Java", "Spring Batch", "Enterprise Processes"],
-        highlights: [
-            "Contributed to trade and ledger settlement reconciliation batch workflows.",
-            "Worked on tenant-isolated processing with client-specific configurations.",
-            "Delivered under fintech-grade compliance and enterprise review pipelines.",
-        ],
-        icon: AccountBalanceIcon,
-        visualType: "infra"
-    },
     {
         id: "medepal",
         title: "React Native Healthcare App / Web",
@@ -123,7 +92,7 @@ const data = [
             demo: "https://collabflow-cyan.vercel.app/",
         },
         icon: AccountTreeTwoToneIcon,
-        visualType: "system",
+        visualType: "collab",
     },
     {
         id: "pulsequeue",
@@ -143,11 +112,11 @@ const data = [
             images: [pulsequeue_1, pulsequeue_2, pulsequeue_3, pulsequeue_4],
         },
         links: {
-            github: "https://github.com/Dhruba-B/pulsequeue",
+            github: "https://github.com/Dhruba-B/pulsequeue/tree/ai-pulsequeue",
             demo: "https://pulsequeue-olive.vercel.app/",
         },
         icon: HubTwoToneIcon,
-        visualType: "infra",
+        visualType: "ds",
     },
     {
         id: "key-project-query-builder",
@@ -233,15 +202,10 @@ export default function Timeline() {
         return () => observers.forEach((obs) => obs.disconnect());
     }, []);
 
-    const scrollTo = (index) => {
-        refs.current[index]?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-    };
-
     return (
         <Box
+            id="projects"
+            component="section"
             sx={{
                 position: "relative",
                 overflow: "hidden",
@@ -294,12 +258,6 @@ export default function Timeline() {
                     <Box key={star.id} sx={starStyle} />
                 );
             })}
-            <ProgressTimeline
-                items={data}
-                activeIndex={activeIndex}
-                onClick={scrollTo}
-            />
-
             {data.map((item, index) => (
                 <Box
                     key={item.id}

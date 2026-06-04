@@ -198,6 +198,8 @@ export default function TimelineItem({ item, index, isActive }) {
             infra: ["Batch", "Process", "Tenant", "Ledger"],
             health: ["Patient", "Care", "Workflow", "Report"],
             core: ["Fullstack", "API", "UI", "DB"],
+            collab: ["Realtime", "Socket", "Collaborative", "Authenicated"],
+            ds: ["Queue", "Prioritization", "Socket", "Redis"],
         };
         return map[item.visualType] || item.stack?.slice(0, 5);
     }
@@ -648,9 +650,9 @@ export default function TimelineItem({ item, index, isActive }) {
                                                 />
                                             </AnimatePresence>
                                         </motion.div>
-                                        <Box sx={{ mt: 1, height: 4, borderRadius: 999, background: "grey.300", overflow: "hidden" }}>
+                                        {/* <Box sx={{ mt: 1, height: 4, borderRadius: 999, background: "grey.300", overflow: "hidden" }}>
                                             <Box sx={{ width: `${caseProgress}%`, height: "100%", background: theme.palette.primary.main, transition: "width 0.2s linear" }} />
-                                        </Box>
+                                        </Box> */}
                                         <Box sx={{ mt: 1, display: "flex", justifyContent: "center", gap: 0.6 }}>
                                             {caseImages.map((_, i) => (
                                                 <Box key={i} sx={{ width: i === activeCaseImage ? 14 : 6, height: 6, borderRadius: 99, background: i === activeCaseImage ? theme.palette.primary.main : "grey.400", transition: "all 0.2s ease" }} />

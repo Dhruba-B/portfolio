@@ -5,7 +5,11 @@ export default function RecruiterSnapshot() {
   const theme = useTheme();
 
   return (
-    <Box sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 6, md: 8 }, mt: 4 }}>
+    <Box
+      id="snapshot"
+      component="section"
+      sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 6, md: 8 }, mt: 4 }}
+    >
       <Box
         sx={{
           maxWidth: 1180,
