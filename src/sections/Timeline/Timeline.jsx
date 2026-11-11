@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
-import { motion } from "framer-motion";
+import { Box, Typography } from "@mui/material";
+import { alpha, keyframes, useTheme } from "@mui/material/styles";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import TimelineItem from "../../components/timeline/TimelineItem";
 
@@ -9,6 +9,7 @@ import AutoAwesomeTwoToneIcon from "@mui/icons-material/AutoAwesomeTwoTone";
 import SchemaTwoToneIcon from "@mui/icons-material/SchemaTwoTone";
 import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
 import HubTwoToneIcon from "@mui/icons-material/HubTwoTone";
+import SecurityTwoToneIcon from "@mui/icons-material/SecurityTwoTone";
 import formImage from "../../assets/images/formImage.png";
 import chatImage_1 from "../../assets/images/chatImage_1.png";
 import chatImage_2 from "../../assets/images/chatImage_2.png";
@@ -22,6 +23,12 @@ import pulsequeue_1 from "../../assets/images/pulsequeue_1.png";
 import pulsequeue_2 from "../../assets/images/pulsequeue_2.png";
 import pulsequeue_3 from "../../assets/images/pulsequeue_3.png";
 import pulsequeue_4 from "../../assets/images/pulsequeue_4.png";
+import interviewGuardian_1 from "../../assets/images/interviewGuardian_1.png";
+import interviewGuardian_2 from "../../assets/images/interviewGuardian_2.png";
+import interviewGuardian_3 from "../../assets/images/interviewGuardian_3.png";
+import interviewGuardian_4 from "../../assets/images/interviewGuardian_4.png";
+import interviewGuardian_5 from "../../assets/images/interviewGuardian_5.png";
+import interviewGuardian_6 from "../../assets/images/interviewGuardian_6.png";
 
 const data = [
     {
@@ -160,46 +167,162 @@ const data = [
         icon: SchemaTwoToneIcon,
         visualType: "data"
     },
+    {
+        id: "interview-guardian",
+        title: "Interview Guardian",
+        feature: true,
+        period: "Multi-tenant exam & proctoring SaaS",
+        subtitle: "Exam management with automated grading and AI-assisted proctoring",
+        stack: ["React", "Node.js", "PostgreSQL", "Prisma", "AI Proctoring"],
+        highlights: [
+            "Multi-tenant platform with role-based access for admins, teachers and students, isolated per organization.",
+            "Full exam lifecycle: authoring, assignments, timed attempts with autosave, auto-graded MCQs and manual grading for descriptive answers.",
+            "AI-assisted proctoring that tracks browser activity and violations and scores risk.",
+        ],
+        caseStudy: {
+            title: "Assessment & Proctoring",
+            summary: "Exam authoring, student attempts, grading and proctoring in one multi-tenant engine.",
+            images: [
+                interviewGuardian_1,
+                interviewGuardian_2,
+                interviewGuardian_3,
+                interviewGuardian_4,
+                interviewGuardian_5,
+                interviewGuardian_6,
+            ],
+        },
+        links: {
+            github: "https://github.com/Dhruba-B/local_interviewGuard",
+            demo: "https://local-interview-guard.vercel.app/",
+        },
+        icon: SecurityTwoToneIcon,
+        visualType: "ai",
+    },
 ];
+
+// The spine's x-position must match the centre of the node column in TimelineItem.jsx
+// (node column: 40px on mobile, 72px from md up).
+const SPINE_X = { xs: "20px", md: "36px" };
+
+const twinkle = keyframes`
+    0%, 100% { opacity: 0.18; transform: scale(1); }
+    50% { opacity: 0.75; transform: scale(1.25); }
+`;
+
+// ─── Scroll-driven path: the one big motion moment ───────────────────────────
+function Spine({ targetRef }) {
+    const theme = useTheme();
+    const { scrollYProgress } = useScroll({
+        target: targetRef,
+        offset: ["start 0.6", "end 0.6"],
+    });
+    const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 26, mass: 0.4 });
+    const headTop = useTransform(progress, (v) => `${v * 100}%`);
+
+    return (
+        <Box
+            aria-hidden="true"
+            sx={{
+                position: "absolute",
+                top: { xs: 54, md: 86 },
+                bottom: 0,
+                left: SPINE_X,
+                width: 2,
+                transform: "translateX(-50%)",
+                zIndex: 0,
+                pointerEvents: "none",
+                WebkitMaskImage: "linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%)",
+            }}
+        >
+            {/* faint full-length track */}
+            <Box sx={{ position: "absolute", inset: 0, background: alpha(theme.palette.primary.main, 0.16) }} />
+
+            {/* filled path that grows with scroll */}
+            <motion.div
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    scaleY: progress,
+                    transformOrigin: "top",
+                    background: `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.accent.main})`,
+                    boxShadow: `0 0 12px ${alpha(theme.palette.accent.main, 0.5)}`,
+                }}
+            />
+
+            {/* comet head */}
+            <motion.div
+                style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: headTop,
+                    width: 10,
+                    height: 10,
+                    marginLeft: -5,
+                    marginTop: -5,
+                    borderRadius: "50%",
+                    background: "#fff",
+                    boxShadow: `0 0 10px 3px ${alpha(theme.palette.accent.main, 0.75)}, 0 0 28px 8px ${alpha(theme.palette.primary.main, 0.35)}`,
+                }}
+            />
+        </Box>
+    );
+}
+
+function SectionHeader() {
+    const reduce = useReducedMotion();
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+            <Box sx={{ pl: { xs: "60px", md: "108px" }, mb: { xs: 1, md: 2 } }}>
+                <Typography
+                    component="h2"
+                    sx={{ fontSize: { xs: "1.9rem", md: "2.6rem" }, fontWeight: 600, lineHeight: 1.15, color: "text.primary" }}
+                >
+                    Projects
+                </Typography>
+            </Box>
+        </motion.div>
+    );
+}
 
 export default function Timeline() {
     const theme = useTheme();
     const [activeIndex, setActiveIndex] = useState(0);
     const refs = useRef([]);
+    const listRef = useRef(null);
+
+    // Same deterministic layout as before, fewer stars, CSS-only twinkle (cheap).
     const stars = useMemo(
         () =>
-            Array.from({ length: 32 }, (_, i) => {
-                const x = (i * 37) % 100;
-                const y = (i * 53) % 100;
-                const size = 1.5 + ((i * 17) % 16) / 10;
-                const delay = (i % 12) * 0.22;
-                const duration = 2.6 + (i % 7) * 0.5;
-
-                return { id: i, x, y, size, delay, duration };
-            }),
+            Array.from({ length: 28 }, (_, i) => ({
+                id: i,
+                x: (i * 37) % 100,
+                y: (i * 53) % 100,
+                size: 1.5 + ((i * 17) % 14) / 10,
+                delay: (i % 12) * 0.45,
+                duration: 3.5 + (i % 7) * 0.7,
+                warm: i % 5 === 0,
+            })),
         []
     );
 
+    // The project crossing the middle band of the viewport is the "active" one.
     useEffect(() => {
-        const observers = refs.current.map((ref, index) => {
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    if (entry.isIntersecting) {
-                        setActiveIndex(index);
-                    }
-                },
-                {
-                    threshold: 0.35,
-                    rootMargin: "-15% 0px -30% 0px",
-                }
-            );
-
-            if (ref) observer.observe(ref);
-
-            return observer;
-        });
-
-        return () => observers.forEach((obs) => obs.disconnect());
+        const io = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) setActiveIndex(Number(entry.target.dataset.index));
+                });
+            },
+            { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+        );
+        refs.current.forEach((el) => el && io.observe(el));
+        return () => io.disconnect();
     }, []);
 
     return (
@@ -209,69 +332,59 @@ export default function Timeline() {
             sx={{
                 position: "relative",
                 overflow: "hidden",
-                overflowX: "hidden",
-                pb: 10,
+                py: { xs: 8, md: 12 },
             }}
         >
+            {/* soft horizon glow at the top */}
             <Box
+                aria-hidden="true"
                 sx={{
                     position: "absolute",
                     inset: 0,
                     pointerEvents: "none",
-                    zIndex: 0,
-                    background: `radial-gradient(circle at 50% 0%, ${alpha(theme.palette.primary.main, 0.12)} 0%, transparent 55%)`,
+                    background: `radial-gradient(ellipse at 50% 0%, ${alpha(theme.palette.primary.main, 0.1)} 0%, transparent 55%)`,
                 }}
             />
-            {stars.map((star) => {
-                const starStyle = {
-                    position: "absolute",
-                    left: `${star.x}%`,
-                    top: `${star.y}%`,
-                    width: star.size,
-                    height: star.size,
-                    borderRadius: "50%",
-                    background:
-                        star.id % 4 === 0
-                            ? alpha(theme.palette.accent.main, 0.78)
-                            : alpha("#e0e7ff", 0.58),
-                    boxShadow:
-                        star.id % 4 === 0
-                            ? `0 0 8px ${alpha(theme.palette.accent.main, 0.42)}`
-                            : "0 0 6px rgba(224,231,255,0.34)",
-                    zIndex: 0,
-                    pointerEvents: "none",
-                };
 
-                return star.id < 10 ? (
-                    <motion.div
-                        key={star.id}
-                        animate={{ opacity: [0.24, 0.62, 0.24] }}
-                        transition={{
-                            duration: star.duration + 3,
-                            delay: star.delay,
-                            repeat: Infinity,
-                            ease: "easeInOut",
+            {/* starfield */}
+            <Box aria-hidden="true" sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+                {stars.map((s) => (
+                    <Box
+                        key={s.id}
+                        sx={{
+                            position: "absolute",
+                            left: `${s.x}%`,
+                            top: `${s.y}%`,
+                            width: s.size,
+                            height: s.size,
+                            borderRadius: "50%",
+                            background: s.warm ? theme.palette.accent.main : "#e0e7ff",
+                            animation: `${twinkle} ${s.duration}s ease-in-out ${s.delay}s infinite`,
+                            "@media (prefers-reduced-motion: reduce)": { animation: "none", opacity: 0.4 },
                         }}
-                        style={starStyle}
                     />
-                ) : (
-                    <Box key={star.id} sx={starStyle} />
-                );
-            })}
-            {data.map((item, index) => (
-                <Box
-                    key={item.id}
-                    id={index === 0 ? "timeline-start" : undefined}
-                    ref={(el) => (refs.current[index] = el)}
-                    sx={{ position: "relative", zIndex: 1 }}
-                >
-                    <TimelineItem
-                        item={item}
-                        index={index}
-                        isActive={index === activeIndex}
-                    />
+                ))}
+            </Box>
+
+            <Box sx={{ position: "relative", zIndex: 1, maxWidth: 1080, mx: "auto", px: { xs: 2.5, md: 6 } }}>
+                <SectionHeader />
+
+                <Box ref={listRef} sx={{ position: "relative" }}>
+                    <Spine targetRef={listRef} />
+
+                    {data.map((item, index) => (
+                        <Box
+                            key={item.id}
+                            id={index === 0 ? "timeline-start" : undefined}
+                            data-index={index}
+                            ref={(el) => (refs.current[index] = el)}
+                            sx={{ position: "relative", zIndex: 1 }}
+                        >
+                            <TimelineItem item={item} index={index} isActive={index === activeIndex} />
+                        </Box>
+                    ))}
                 </Box>
-            ))}
+            </Box>
         </Box>
     );
 }

@@ -3,6 +3,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import reactLogo from "../../assets/react.svg";
+import pythonLogo from "../../assets/icons/python.png";
 import jsLogo from "../../assets/icons/js.png";
 import ngrokLogo from "../../assets/icons/ngrok.png";
 import javaLogo from "../../assets/icons/java.svg";
@@ -34,6 +35,37 @@ const skillGroups = [
       "Design production-grade backend services with REST API contracts, modular service boundaries, socket-driven collaboration, and scalable processing flows.",
     skills: ["REST APIs", "Express.js", "WebSockets", "Distributed Systems", "Queue Architectures", "Worker Systems"],
     accentColor: "#6DB33F",
+  },
+  {
+    title: "AI & LLMs",
+    spotlight: [
+      { name: "JavaScript", logo: jsLogo },
+      { name: "Spring Boot", logo: springLogo },
+    ],
+    summary:
+      "Built LLM-powered features for healthcare and analytics products: NL-to-SQL with destructive-query blocking, prescription digitisation with strict JSON-schema outputs, and AI analysis assistants grounded in forecast data, backed by validation, and production guardrails.",
+    skills: [
+      "LLM API Integration (OpenAI)", "Structured Outputs", "Natural Language to SQL", "Prompt Engineering", "Validation & Guardrails", "AI Question Generation", "Agentic AI Tools (Codex)",
+    ],
+    accentColor: "#fcf967",
+  },
+  {
+    title: "Machine Learning",
+    spotlight: [
+      { name: "JavaScript", logo: jsLogo },
+      { name: "Python", logo: pythonLogo },
+    ],
+    summary:
+      "Built an end-to-end disease forecasting pipeline: feature engineering, quantile models with conformal calibration, rolling-origin backtesting, and a REST API feeding a live risk dashboard.",
+    skills: [
+      "Time-series Forecasting",
+      "LightGBM",
+      "Prediction Intervals",
+      "Conformal Calibration",
+      "Backtesting",
+      "Feature Engineering",
+    ],
+    accentColor: "#7dd3fc",
   },
   {
     title: "Scalable Backend Systems",
@@ -70,17 +102,7 @@ const skillGroups = [
     skills: ["AI Worker Orchestration", "Local LLM Inference", "Ollama", "Capability-Based Routing", "Redis Coordination", "Background AI Processing"],
     accentColor: "#A78BFA",
   },
-  {
-    title: "AI & LLMs",
-    spotlight: [
-      { name: "JavaScript", logo: jsLogo },
-      { name: "Spring Boot", logo: springLogo },
-    ],
-    summary:
-      "Integrated LLM APIs into user workflows to convert natural-language prompts into validated outputs with safety checks, schema guards, and operational reliability.",
-    skills: ["LLM API Integration", "Agentic AI Tools (Codex)", "Natural Language to SQL", "Prompt Engineering", "Validation Pipelines"],
-    accentColor: "#fcf967",
-  },
+
   {
     title: "DevOps & Infra",
     spotlight: [
@@ -100,7 +122,7 @@ const skillGroups = [
     ],
     summary:
       "Executed disciplined delivery workflows with version control, API validation, integration testing support, and repeatable release readiness for client environments.",
-    skills: ["Selenium (Python)", "Postman", "Ngrok", "White-label Deployment", "Release Workflow", "CI/CD Pipelines", "Code Review Standards"],
+    skills: ["Postman", "Ngrok", "White-label Deployment", "Release Workflow", "CI/CD Pipelines", "Code Review Standards"],
     accentColor: "#F97316",
   },
 

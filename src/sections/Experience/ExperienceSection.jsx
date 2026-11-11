@@ -24,7 +24,7 @@ const experiences = [
       "Worked across product flows from responsive UI and API contracts to schema design.",
       "Applied reusable architecture patterns for multi-tenant, configurable delivery.",
     ],
-    metric: "3+ yrs",
+    metric: Math.floor((Date.now() - new Date(2022, 7, 1)) / 31557600000) + "+ yrs",
     Icon: RocketLaunchIcon,
     accent: "#4FE7F2",
   },

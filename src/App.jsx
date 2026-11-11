@@ -1,4 +1,4 @@
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline, GlobalStyles } from "@mui/material";
 import { useEffect, useState } from "react";
 import theme from "./theme/theme";
 import SmoothScrollProvider from "./providers/SmoothScrollProvider";
@@ -23,6 +23,75 @@ const pageSections = [
 function App() {
   const [activeSection, setActiveSection] = useState(0);
 
+  const SPACE = {
+    void: "#05060f",
+    nebula: "#0d1030",
+    blue: "#4f8cff",
+    cyan: "#7dd3fc",
+    violet: "#8b5cf6",
+    magenta: "#c084fc",
+  };
+
+  const spaceScrollbar = (
+    <GlobalStyles
+      styles={{
+        // Firefox only; Chrome would ignore the webkit styling if this applied there
+        "@supports not selector(::-webkit-scrollbar)": {
+          html: {
+            scrollbarWidth: "thin",
+            scrollbarColor: `${SPACE.violet} ${SPACE.void}`,
+          },
+        },
+
+        "*::-webkit-scrollbar": {
+          width: "12px",
+          height: "12px",
+        },
+
+        // remove the default arrow buttons
+        "*::-webkit-scrollbar-button": {
+          display: "none",
+          width: 0,
+          height: 0,
+        },
+
+        "*::-webkit-scrollbar-track": {
+          background: `
+            radial-gradient(1px 1px at 30% 12%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 70% 38%, rgba(125,211,252,0.55), transparent),
+            radial-gradient(1px 1px at 40% 64%, rgba(192,132,252,0.55), transparent),
+            radial-gradient(1px 1px at 65% 88%, rgba(255,255,255,0.5), transparent),
+            linear-gradient(180deg, ${SPACE.void}, ${SPACE.nebula} 50%, ${SPACE.void})
+          `,
+          backgroundSize: "100% 220px, 100% 220px, 100% 220px, 100% 220px, 100% 100%",
+          borderLeft: "1px solid rgba(139, 92, 246, 0.18)",
+        },
+
+        "*::-webkit-scrollbar-thumb": {
+          background: `linear-gradient(180deg, ${SPACE.cyan} 0%, ${SPACE.blue} 35%, ${SPACE.violet} 75%, ${SPACE.magenta} 100%)`,
+          borderRadius: "999px",
+          border: `3px solid ${SPACE.void}`,
+          boxShadow: "inset 0 0 6px rgba(255,255,255,0.4)",
+          minHeight: "64px",
+        },
+
+        "*::-webkit-scrollbar-thumb:hover": {
+          background: `linear-gradient(180deg, #a5e8ff 0%, ${SPACE.blue} 30%, ${SPACE.magenta} 100%)`,
+          boxShadow: "inset 0 0 8px rgba(255,255,255,0.6)",
+        },
+
+        "*::-webkit-scrollbar-thumb:active": {
+          background: `linear-gradient(180deg, ${SPACE.blue}, ${SPACE.violet})`,
+        },
+
+        "*::-webkit-scrollbar-corner": {
+          background: SPACE.void,
+        },
+      }}
+    />
+  );
+
+
   useEffect(() => {
     const updateActiveSection = () => {
       const anchorLine = window.innerHeight * 0.35;
@@ -36,7 +105,7 @@ function App() {
         const rect = element.getBoundingClientRect();
         const isNearViewport = rect.bottom > 0 && rect.top < window.innerHeight;
         const distance = Math.abs(rect.top - anchorLine);
-        
+
         if (isNearViewport && (distance < nearestDistance || true)) {
           nextActive = index;
           nearestDistance = distance;
@@ -88,20 +157,21 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      {spaceScrollbar}
       <CssBaseline />
-        <ProgressTimeline
-          items={pageSections}
-          activeIndex={activeSection}
-          onClick={scrollToSection}
-        />
-        <Hero sections={pageSections} onSectionSelect={scrollToSection} />
-        {/* <RoleCtaStrip /> */}
-        <TechCredibilityPanel />
-        <ExperienceSection />
-        <Timeline />
-        <RecruiterSnapshot />
-        <Footer />
-        <StickyContactOrb />
+      <ProgressTimeline
+        items={pageSections}
+        activeIndex={activeSection}
+        onClick={scrollToSection}
+      />
+      <Hero sections={pageSections} onSectionSelect={scrollToSection} />
+      {/* <RoleCtaStrip /> */}
+      <TechCredibilityPanel />
+      <ExperienceSection />
+      <Timeline />
+      {/* <RecruiterSnapshot /> */}
+      <Footer />
+      <StickyContactOrb />
     </ThemeProvider>
   );
 }

@@ -29,7 +29,7 @@ export default function RecruiterSnapshot() {
           real-time collaboration, distributed queues, relational databases, and LLM-assisted workflows.
         </Typography>
         <Typography sx={{ color: "text.secondary", lineHeight: 1.75, mt: 1 }}>
-          Snapshot metrics: 3+ years of professional experience, 7+ delivered projects/modules, and ownership across
+          Snapshot metrics: {Math.floor((Date.now() - new Date(2022, 7, 1)) / 31557600000)}+ years of professional experience, 7+ delivered projects/modules, and ownership across
           frontend implementation, backend services, database design, and version-controlled delivery workflows.
         </Typography>
         <Typography sx={{ color: "text.secondary", lineHeight: 1.75, mt: 1 }}>

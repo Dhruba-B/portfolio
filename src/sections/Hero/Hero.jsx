@@ -17,7 +17,7 @@ export default function HeroSection({ sections = [], onSectionSelect }) {
     const ref = useRef(null);
 
     const stats = [
-        { value: "3+", label: "Years production" },
+        { value: "4+", label: "Years experience" },
         { value: "10+", label: "Products / Feature Updates" },
         { value: "2+", label: "Industry domains" },
         { value: "100%", label: "Stack ownership" },

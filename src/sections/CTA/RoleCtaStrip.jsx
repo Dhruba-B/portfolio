@@ -43,7 +43,7 @@ export default function RoleCtaStrip() {
             Full Stack Developer roles with full-cycle ownership from UI to APIs, database workflows, and release pipelines.
           </Typography>
           <Box sx={{ mt: 1.2, display: "flex", gap: 0.8, flexWrap: "wrap" }}>
-            {["3+ Years Experience", "5+ Projects Delivered", "Frontend to Backend Ownership"].map((item) => (
+            {[Math.floor((Date.now() - new Date(2022, 7, 1)) / 31557600000) + " Years Experience", "5+ Projects Delivered", "Frontend to Backend Ownership"].map((item) => (
               <Chip
                 key={item}
                 size="small"
