@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, Dialog, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -18,6 +18,9 @@ import postgresqlLogo from "../../assets/icons/Postgresql.svg.png";
 import nodeLogo from "../../assets/icons/node.png";
 import redis from "../../assets/icons/redis.png";
 import dockerLogo from "../../assets/icons/docker.png";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import ZoomInRoundedIcon from "@mui/icons-material/ZoomInRounded";
+import ZoomOutRoundedIcon from "@mui/icons-material/ZoomOutRounded";
 
 const stackIconMap = {
     react: reactLogo,
@@ -211,23 +214,34 @@ function PreviewStack({ images, title, summary, onOpen }) {
     );
 }
 
-// ─── Lightbox: replaces the old 1080px hover panel and the mobile bottom sheet ─
 function Lightbox({ open, onClose, images, title }) {
     const theme = useTheme();
-    const [[idx, dir], setPage] = useState([0, 0]);
+    const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+    const [idx, setIdx] = useState(0);
     const total = images.length;
 
+    // zoom level of the current image, and pointer bookkeeping for swipe-to-change
+    const scaleRef = useRef(1);
+    const pointers = useRef(new Set());
+    const multiTouch = useRef(false);
+    const start = useRef({ x: 0, y: 0 });
+
     const paginate = useCallback(
-        (d) => setPage(([i]) => [(i + d + total) % total, d]),
+        (d) => setIdx((i) => (i + d + total) % total),
         [total]
     );
 
     useEffect(() => {
-        if (open) setPage([0, 0]);
+        if (open) setIdx(0);
     }, [open]);
 
+    // a new image always starts un-zoomed
     useEffect(() => {
-        if (!open || total < 2) return;
+        scaleRef.current = 1;
+    }, [idx]);
+
+    useEffect(() => {
+        if (!open || total < 2) return undefined;
         const onKey = (e) => {
             if (e.key === "ArrowRight") paginate(1);
             if (e.key === "ArrowLeft") paginate(-1);
@@ -236,16 +250,40 @@ function Lightbox({ open, onClose, images, title }) {
         return () => window.removeEventListener("keydown", onKey);
     }, [open, total, paginate]);
 
-    const slide = {
-        enter: (d) => ({ opacity: 0, x: d >= 0 ? 48 : -48 }),
-        center: { opacity: 1, x: 0 },
-        exit: (d) => ({ opacity: 0, x: d >= 0 ? -48 : 48 }),
+    // Swipe left/right changes image only when the image is not zoomed in,
+    // so panning a zoomed image never flips the page by accident.
+    // Mouse is excluded: on desktop a drag always means "pan", and image
+    // changes come from the arrow buttons, arrow keys and dots instead.
+    const onPointerDownCapture = (e) => {
+        if (e.pointerType === "mouse") return;
+        pointers.current.add(e.pointerId);
+        if (pointers.current.size > 1) multiTouch.current = true;
+        else start.current = { x: e.clientX, y: e.clientY };
+    };
+    const onPointerUpCapture = (e) => {
+        if (e.pointerType === "mouse") return;
+        const wasSingle = !multiTouch.current;
+        pointers.current.delete(e.pointerId);
+        if (pointers.current.size === 0) {
+            const dx = e.clientX - start.current.x;
+            const dy = e.clientY - start.current.y;
+            if (wasSingle && total > 1 && scaleRef.current <= 1.02 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                paginate(dx < 0 ? 1 : -1);
+            }
+            multiTouch.current = false;
+        }
+    };
+    const onPointerCancelCapture = (e) => {
+        if (e.pointerType === "mouse") return;
+        pointers.current.delete(e.pointerId);
+        if (pointers.current.size === 0) multiTouch.current = false;
     };
 
     const navBtn = {
         position: "absolute",
         top: "50%",
         transform: "translateY(-50%)",
+        zIndex: 2,
         color: "text.primary",
         background: alpha(theme.palette.background.default, 0.75),
         border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
@@ -253,26 +291,36 @@ function Lightbox({ open, onClose, images, title }) {
         "&:hover": { background: alpha(theme.palette.primary.main, 0.22) },
     };
 
+    const toolBtn = {
+        color: "text.primary",
+        background: alpha(theme.palette.background.default, 0.8),
+        border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+        "&:hover": { background: alpha(theme.palette.primary.main, 0.22) },
+    };
+
     return (
         <Dialog
             open={open}
             onClose={onClose}
+            fullScreen={isSmall}
             maxWidth="lg"
             fullWidth
             aria-label={`${title} screenshots`}
             sx={{
                 "& .MuiBackdrop-root": { backgroundColor: alpha("#02030a", 0.78), backdropFilter: "blur(6px)" },
                 "& .MuiDialog-paper": {
-                    m: { xs: 1.5, md: 3 },
-                    borderRadius: 3,
+                    m: { xs: 0, sm: 3 },
+                    borderRadius: { xs: 0, sm: 3 },
                     backgroundImage: "none",
                     background: theme.palette.background.paper,
-                    border: `1px solid ${alpha(theme.palette.primary.main, 0.28)}`,
+                    border: { xs: "none", sm: `1px solid ${alpha(theme.palette.primary.main, 0.28)}` },
                     overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
                 },
             }}
         >
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2.5, py: 1.25 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 2.5, py: 1.25, flexShrink: 0 }}>
                 <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>{title}</Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                     {total > 1 && (
@@ -287,46 +335,70 @@ function Lightbox({ open, onClose, images, title }) {
             </Box>
 
             <Box
+                onPointerDownCapture={onPointerDownCapture}
+                onPointerUpCapture={onPointerUpCapture}
+                onPointerCancelCapture={onPointerCancelCapture}
                 sx={{
                     position: "relative",
-                    height: { xs: "46vh", md: "66vh" },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    px: { xs: 1, md: 7 },
-                    pb: 1,
+                    flex: { xs: 1, sm: "none" },
+                    height: { xs: "auto", sm: "66vh" },
+                    minHeight: 0,
                     overflow: "hidden",
+                    px: { xs: 0, md: 7 },
+                    // let the zoom library own touch gestures inside the viewer
+                    touchAction: "none",
                 }}
             >
-                <AnimatePresence initial={false} custom={dir} mode="wait">
-                    <motion.img
-                        key={idx}
-                        src={images[idx]}
-                        alt={`${title} screenshot ${idx + 1}`}
-                        custom={dir}
-                        variants={slide}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.28, ease: "easeOut" }}
-                        drag={total > 1 ? "x" : false}
-                        dragConstraints={{ left: 0, right: 0 }}
-                        dragElastic={0.2}
-                        onDragEnd={(e, info) => {
-                            if (info.offset.x < -60) paginate(1);
-                            else if (info.offset.x > 60) paginate(-1);
-                        }}
-                        draggable={false}
-                        style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", borderRadius: 10, userSelect: "none" }}
-                    />
-                </AnimatePresence>
+                {/* key={idx} resets zoom and pan whenever the image changes */}
+                <TransformWrapper
+                    key={idx}
+                    initialScale={1}
+                    minScale={1}
+                    maxScale={5}
+                    centerOnInit
+                    doubleClick={{ mode: "toggle", step: 2.2 }}
+                    wheel={{ step: 0.15 }}
+                    pinch={{ step: 5 }}
+                    onTransformed={(ref) => {
+                        scaleRef.current = ref.state.scale;
+                    }}
+                >
+                    {({ zoomIn, zoomOut, resetTransform }) => (
+                        <>
+                            <TransformComponent
+                                wrapperStyle={{ width: "100%", height: "100%" }}
+                                contentStyle={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+                            >
+                                <img
+                                    src={images[idx]}
+                                    alt={`${title} screenshot ${idx + 1}`}
+                                    draggable={false}
+                                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", userSelect: "none", display: "block" }}
+                                />
+                            </TransformComponent>
+
+                            {/* zoom controls */}
+                            <Box sx={{ position: "absolute", right: 12, bottom: 12, zIndex: 2, display: "flex", gap: 1 }}>
+                                <IconButton size="small" aria-label="Zoom out" onClick={() => zoomOut(0.8)} sx={toolBtn}>
+                                    <ZoomOutRoundedIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton size="small" aria-label="Zoom in" onClick={() => zoomIn(0.8)} sx={toolBtn}>
+                                    <ZoomInRoundedIcon fontSize="small" />
+                                </IconButton>
+                                <Button size="small" onClick={() => resetTransform()} sx={{ ...toolBtn, textTransform: "none", minWidth: 0, px: 1.5, borderRadius: 99 }}>
+                                    Reset
+                                </Button>
+                            </Box>
+                        </>
+                    )}
+                </TransformWrapper>
 
                 {total > 1 && (
                     <>
-                        <IconButton onClick={() => paginate(-1)} aria-label="Previous screenshot" sx={{ ...navBtn, left: { xs: 8, md: 16 }, display: { xs: "none", md: "inline-flex" } }}>
+                        <IconButton onClick={() => paginate(-1)} aria-label="Previous screenshot" sx={{ ...navBtn, left: 16, display: { xs: "none", md: "inline-flex" } }}>
                             <ChevronLeftRoundedIcon />
                         </IconButton>
-                        <IconButton onClick={() => paginate(1)} aria-label="Next screenshot" sx={{ ...navBtn, right: { xs: 8, md: 16 }, display: { xs: "none", md: "inline-flex" } }}>
+                        <IconButton onClick={() => paginate(1)} aria-label="Next screenshot" sx={{ ...navBtn, right: 16, display: { xs: "none", md: "inline-flex" } }}>
                             <ChevronRightRoundedIcon />
                         </IconButton>
                     </>
@@ -334,14 +406,14 @@ function Lightbox({ open, onClose, images, title }) {
             </Box>
 
             {total > 1 && (
-                <Box sx={{ display: "flex", justifyContent: "center", gap: 0.75, pb: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 0.75, py: 2, flexShrink: 0 }}>
                     {images.map((_, i) => (
                         <Box
                             key={i}
                             component="button"
                             type="button"
                             aria-label={`Go to screenshot ${i + 1}`}
-                            onClick={() => setPage([i, i > idx ? 1 : -1])}
+                            onClick={() => setIdx(i)}
                             sx={{
                                 p: 0,
                                 border: 0,

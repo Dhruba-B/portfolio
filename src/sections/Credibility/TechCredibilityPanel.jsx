@@ -230,7 +230,7 @@ export default function TechCredibilityPanel() {
     <Box
       id="tech"
       component="section"
-      sx={{ px: { xs: 3, md: 8, lg: 16 }, mb: { xs: 8, md: 10 } }}
+      sx={{ px: { xs: 3, md: 8, lg: 16 }, my: { xs: 8, md: 10 } }}
     >
       <Box sx={{ maxWidth: 1180, mx: "auto", textAlign: "left" }}>
 

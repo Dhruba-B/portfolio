@@ -11,6 +11,7 @@ import RecruiterSnapshot from "./sections/Recruiter/RecruiterSnapshot";
 import Footer from "./sections/Footer/Footer";
 import StickyContactOrb from "./components/StickyContactOrb";
 import ProgressTimeline from "./components/timeline/ProgressTimeline";
+import ScrollHero from "./sections/Hero/ScrollHero";
 
 const pageSections = [
   { id: "hero", title: "Home" },
@@ -101,15 +102,8 @@ function App() {
       pageSections.forEach((section, index) => {
         const element = document.getElementById(section.id);
         if (!element) return;
-
         const rect = element.getBoundingClientRect();
-        const isNearViewport = rect.bottom > 0 && rect.top < window.innerHeight;
-        const distance = Math.abs(rect.top - anchorLine);
-
-        if (isNearViewport && (distance < nearestDistance || true)) {
-          nextActive = index;
-          nearestDistance = distance;
-        }
+        if (rect.top <= anchorLine && rect.bottom > anchorLine) nextActive = index;
       });
 
       setActiveSection(nextActive);
@@ -164,9 +158,10 @@ function App() {
         activeIndex={activeSection}
         onClick={scrollToSection}
       />
-      <Hero sections={pageSections} onSectionSelect={scrollToSection} />
+      <ScrollHero sections={pageSections} onSectionSelect={scrollToSection} />
+      {/* <Hero sections={pageSections} onSectionSelect={scrollToSection} /> */}
       {/* <RoleCtaStrip /> */}
-      <TechCredibilityPanel />
+      
       <ExperienceSection />
       <Timeline />
       {/* <RecruiterSnapshot /> */}

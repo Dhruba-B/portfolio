@@ -453,7 +453,20 @@ export default function ExperienceSection() {
         <ParallaxStar key={star.id} star={star} scrollY={scrollY} />
       ))}
 
-      <Box sx={{ position: "relative", zIndex: 1, maxWidth: 1180, mx: "auto" }}>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 1360,
+          mx: "auto",
+          p: { xs: 2.5, md: 6 },
+          borderRadius: "28px",
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.25)}`,
+          background: `linear-gradient(180deg, ${alpha(theme.palette.background.default, 0.84)}, ${alpha(theme.palette.background.default, 0.72)})`,
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          boxShadow: `0 20px 60px ${alpha(theme.palette.background.default, 0.6)}, inset 0 0 0 1px ${alpha(theme.palette.accent.main, 0.08)}`,
+        }}>
         <motion.div
           variants={sectionVariants}
           initial="hidden"
