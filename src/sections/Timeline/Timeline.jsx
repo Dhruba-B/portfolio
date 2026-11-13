@@ -10,6 +10,7 @@ import SchemaTwoToneIcon from "@mui/icons-material/SchemaTwoTone";
 import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
 import HubTwoToneIcon from "@mui/icons-material/HubTwoTone";
 import SecurityTwoToneIcon from "@mui/icons-material/SecurityTwoTone";
+import BiotechTwoToneIcon from "@mui/icons-material/BiotechTwoTone";
 import formImage from "../../assets/images/formImage.png";
 import chatImage_1 from "../../assets/images/chatImage_1.png";
 import chatImage_2 from "../../assets/images/chatImage_2.png";
@@ -45,38 +46,48 @@ const data = [
         icon: HealthAndSafetyIcon,
         visualType: "health"
     },
-    // {
-    //     id: "key-projects-mobile-and-fintech",
-    //     title: "White-label Mobile Delivery",
-    //     period: "MAMATA, Nursing App,",
-    //     subtitle: "Client-specific variants from a shared core",
-    //     stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
-    //     highlights: [
-    //         "Engineered MAMATA as a white-label extension of MEDePAL, enabling rapid client-specific deployments from a shared core.",
-    //         "Translated a single codebase into branded, feature-adaptive mobile variants through modular architecture",
-    //     ],
-    //     caseStudy: {
-    //         title: "White-labeled product Delivery",
-    //         summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
-    //         images: [medepal_1, medepal_2, medepal_3],
-    //     },
-    //     icon: MobileFriendlyIcon,
-    //     visualType: "mobile"
-    // },
-    // {
-    //     id: "UI_Architecture",
-    //     title: "Scalable, Component-Driven UI Architecture",
-    //     period: "Platform Modernization",
-    //     subtitle: "Shared React + MUI design system",
-    //     stack: ["React", "MUI", "Component Architecture"],
-    //     highlights: [
-    //         "Refactored legacy screens into a shared React + MUI component library.",
-    //         "Reduced duplication and enforced UI consistency across modules.",
-    //         "Set scalable front-end standards for multi-tenant products.",
-    //     ],
-    //     icon: WidgetsIcon,
-    //     visualType: "system"
-    // },
+    {
+        id: "health-risk-forecasting",
+        title: "MedEpal Health Risk Forecasting",
+        feature: true,
+        period: "ML Disease Surveillance & Forecasting",
+        subtitle: "LightGBM modules for Dengue, Delhi respiratory illness and TB, with calibrated forecasts and state-level priority alerts",
+        stack: ["Python", "LightGBM", "Quantile Regression", "Conformal Prediction", "Time-Series Forecasting"],
+        modelKeywords: [
+            "Quantile Gradient Boosting",
+            "P10 · P50 · P90",
+            "1–6 Month Horizons",
+            "Global Model (36 States/UTs)",
+            "Rate per Lakh",
+            "Conformal Widening",
+            "Rolling-Origin Backtesting",
+            "Leave-One-Fold-Out Validation",
+            "80% Interval Coverage",
+            "Lagged Covariates",
+            "No Incidence Leakage",
+            "Testing-Effort Adjustment",
+            "Priority Scoring",
+        ],
+        highlights: [
+            "Built LightGBM modules for Dengue, Delhi respiratory illness and TB under one shared forecasting framework.",
+            "TB module: a single quantile LightGBM model shared across 36 states and UTs, forecasting rate per lakh against the recent 3-month average and predicting P10, P50 and P90 for each 1–6 month horizon, with COVID months down-weighted rather than dropped.",
+            "Used testing effort (tests per lakh, positivity, active case-finding) as inputs so drops in notifications from reduced testing are not read as falling TB, and kept estimated incidence out of the model to prevent leakage, using it only to measure the case-finding gap.",
+            "Added structural and environmental drivers (undernutrition, diabetes, tobacco, HIV, poverty, urbanisation, treatment success, PM2.5, temperature, rainfall), lagged one year for publication delay.",
+            "Calibrated uncertainty with conformal widening from rolling-origin backtests, checked on leave-one-fold-out validation against an 80% coverage target.",
+            "Combined burden, momentum, case-finding gap and vulnerability into a transparent weighted priority score with operational alerts.",
+        ],
+        caseStudy: {
+            title: "Calibrated Multi-Disease Forecasting",
+            summary: "Notification history and testing effort, plus lagged structural and environmental factors, feed a quantile LightGBM model. Conformal calibration and priority scoring turn forecasts into state-level alerts.",
+            // images: [pulseguard_1, pulseguard_2, pulseguard_3],
+        },
+        links: {
+            // github: "",
+            // demo: "",
+        },
+        icon: BiotechTwoToneIcon,
+        visualType: "ai",
+    },
     {
         id: "collabflow",
         title: "CollabFlow",
@@ -199,6 +210,40 @@ const data = [
         visualType: "ai",
     },
 ];
+
+
+// {
+//     id: "key-projects-mobile-and-fintech",
+//     title: "White-label Mobile Delivery",
+//     period: "MAMATA, Nursing App,",
+//     subtitle: "Client-specific variants from a shared core",
+//     stack: ["React Native", "Spring Boot", "Multi-tenant Security"],
+//     highlights: [
+//         "Engineered MAMATA as a white-label extension of MEDePAL, enabling rapid client-specific deployments from a shared core.",
+//         "Translated a single codebase into branded, feature-adaptive mobile variants through modular architecture",
+//     ],
+//     caseStudy: {
+//         title: "White-labeled product Delivery",
+//         summary: "Reusable core app adapted into client-specific variants via branding and module configuration.",
+//         images: [medepal_1, medepal_2, medepal_3],
+//     },
+//     icon: MobileFriendlyIcon,
+//     visualType: "mobile"
+// },
+// {
+//     id: "UI_Architecture",
+//     title: "Scalable, Component-Driven UI Architecture",
+//     period: "Platform Modernization",
+//     subtitle: "Shared React + MUI design system",
+//     stack: ["React", "MUI", "Component Architecture"],
+//     highlights: [
+//         "Refactored legacy screens into a shared React + MUI component library.",
+//         "Reduced duplication and enforced UI consistency across modules.",
+//         "Set scalable front-end standards for multi-tenant products.",
+//     ],
+//     icon: WidgetsIcon,
+//     visualType: "system"
+// },
 
 // The spine's x-position must match the centre of the node column in TimelineItem.jsx
 // (node column: 40px on mobile, 72px from md up).

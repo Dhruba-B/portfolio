@@ -207,7 +207,7 @@ function PreviewStack({ images, title, summary, onOpen }) {
             </Box>
 
             <Typography sx={{ mt: 1.5, fontWeight: 600, color: "text.primary", fontSize: "0.95rem" }}>{title}</Typography>
-            <Typography sx={{ mt: 0.4, color: "text.secondary", fontSize: "0.88rem", lineHeight: 1.6, maxWidth: 460 }}>
+            <Typography sx={{ mt: 0.4, color: "text.secondary", fontSize: "0.88rem", lineHeight: 1.6, }}>
                 {summary}
             </Typography>
         </Box>
@@ -528,7 +528,10 @@ export default function TimelineItem({ item, index, isActive }) {
                         sx={{
                             display: "grid",
                             gap: { xs: 3, lg: 6 },
-                            gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: hasPreview ? "minmax(0, 1.05fr) minmax(0, 0.95fr)" : "minmax(0, 720px)" },
+                            gridTemplateColumns: {
+                                xs: "minmax(0, 1fr)",
+                                lg: hasPreview ? "minmax(0, 1fr) minmax(0, 1fr)" : "minmax(0, 720px)",
+                            },
                             alignItems: "start",
                         }}
                     >
@@ -637,12 +640,14 @@ export default function TimelineItem({ item, index, isActive }) {
 
                         {hasPreview && (
                             <motion.div variants={reveal}>
-                                <PreviewStack
-                                    images={images}
-                                    title={item.caseStudy.title}
-                                    summary={item.caseStudy.summary}
-                                    onOpen={() => setLightboxOpen(true)}
-                                />
+                                <Box sx={{ position: { lg: "sticky" }, top: { lg: 96 } }}>
+                                    <PreviewStack
+                                        images={images}
+                                        title={item.caseStudy.title}
+                                        summary={item.caseStudy.summary}
+                                        onOpen={() => setLightboxOpen(true)}
+                                    />
+                                </Box>
                             </motion.div>
                         )}
                     </Box>
