@@ -163,18 +163,17 @@ const Sub = ({ children, center }) => (
     </Typography>
 );
 
-// Every act must carry data-earth-act – EarthBackdrop keys the planet's pose off these.
 const Act = ({ children, sx }) => (
     <Box
         component="section"
         data-earth-act
         sx={[
             {
-                minHeight: "100vh",
+                minHeight: { xs: "auto", md: "100vh" },
                 display: "flex",
                 alignItems: "center",
                 px: { xs: 3, md: 8, lg: 16 },
-                py: { xs: 12, md: 14 },
+                py: { xs: 8, md: 14 },
             },
             ...(sx ? [sx] : []),
         ]}
@@ -338,7 +337,7 @@ export default function ScrollHero({ sections = [], onSectionSelect }) {
                 </Box>
 
                 {/* ── Act 0 · your original hero ─────────────────────────────── */}
-                <Act>
+                <Act sx={{ py: { xs: 12, md: 14 } }}>
                     <Box
                         sx={{
                             display: "flex",
