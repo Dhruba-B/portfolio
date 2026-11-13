@@ -39,7 +39,7 @@ export default function EarthBackdrop({ zoneRef, keyframes = EARTH_KEYFRAMES, te
             let prevCenter = null;
             for (let i = 0; i < acts.length; i++) {
                 const r = acts[i].getBoundingClientRect();
-                const c = r.top + r.height / 2;
+                const c = r.top + Math.min(r.height, window.innerHeight) / 2;
                 if (vc < c) {
                     if (i === 0) return 0;
                     return i - 1 + smooth((vc - prevCenter) / (c - prevCenter));

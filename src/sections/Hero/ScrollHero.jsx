@@ -10,6 +10,7 @@ import TechCredibilityPanel from "../Credibility/TechCredibilityPanel";
 import { Orbit } from "lucide-react";
 import OrbitCapabilities from "./OrbitCapabilities";
 import MissionControl from "./MissionControl";
+import StellarHeader from "./StellarHeader";
 
 /* ─────────────── content (all taken from your previous hero) ─────────────── */
 const HERO_STATS = [
@@ -221,120 +222,10 @@ export default function ScrollHero({ sections = [], onSectionSelect }) {
 
             <Box sx={{ position: "relative", zIndex: 1 }}>
                 {/* ── Header pill (same as before) ───────────────────────────── */}
-                <Box
-                    component="header"
-                    sx={{
-                        position: "absolute",
-                        top: { xs: 24, md: 36 },
-                        left: { xs: 16, md: 56, lg: 96 },
-                        right: { xs: 16, md: 56, lg: 96 },
-                        zIndex: 8,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 2,
-                        px: { xs: 1.2, md: 1.6 },
-                        py: 1,
-                        borderRadius: 999,
-                        border: `1px solid ${alpha(theme.palette.primary.main, 0.22)}`,
-                        background: alpha(theme.palette.background.default, 0.52),
-                        backdropFilter: "blur(12px)",
-                        boxShadow: `0 10px 34px ${alpha(theme.palette.primary.main, 0.12)}`,
-                    }}
-                >
-                    <Box
-                        component="a"
-                        href="#hero"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            onSectionSelect?.(0);
-                        }}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1.1,
-                            minWidth: 0,
-                            color: "inherit",
-                            textDecoration: "none",
-                            borderRadius: 999,
-                            pr: { xs: 0.4, md: 1 },
-                            "&:focus-visible": { outline: `2px solid ${alpha(theme.palette.accent.main, 0.6)}`, outlineOffset: 3 },
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: { xs: 30, md: 34 },
-                                height: { xs: 30, md: 34 },
-                                borderRadius: "50%",
-                                display: "grid",
-                                placeItems: "center",
-                                flexShrink: 0,
-                                color: "text.primary",
-                                fontFamily: "'JetBrains Mono', monospace",
-                                fontWeight: 900,
-                                fontSize: { xs: "0.7rem", md: "0.78rem" },
-                                border: `1px solid ${alpha(theme.palette.accent.main, 0.42)}`,
-                                background: `radial-gradient(circle at 35% 25%, ${alpha(theme.palette.accent.main, 0.22)}, ${alpha(theme.palette.primary.main, 0.08)})`,
-                                boxShadow: `0 0 18px ${alpha(theme.palette.accent.main, 0.18)}`,
-                            }}
-                        >
-                            DB
-                        </Box>
-                        <Typography
-                            sx={{
-                                color: "text.primary",
-                                fontWeight: 850,
-                                fontSize: { xs: "0.76rem", md: "0.9rem" },
-                                lineHeight: 1.05,
-                                whiteSpace: "nowrap",
-                                fontFamily: "'JetBrains Mono', monospace",
-                            }}
-                        >
-                            Dhrubashis Basak
-                        </Typography>
-                    </Box>
-
-                    <Box
-                        component="nav"
-                        aria-label="Primary sections"
-                        sx={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            gap: { xs: 0.4, md: 0.8 },
-                            overflowX: "auto",
-                            scrollbarWidth: "none",
-                            minWidth: 0,
-                            "&::-webkit-scrollbar": { display: "none" },
-                        }}
-                    >
-                        {sections.map((section, index) => (
-                            <Button
-                                key={section.id}
-                                size="small"
-                                href={`#${section.id}`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    onSectionSelect?.(index);
-                                }}
-                                sx={{
-                                    minWidth: "auto",
-                                    px: { xs: 1, md: 1.25 },
-                                    py: 0.7,
-                                    borderRadius: 999,
-                                    color: "text.secondary",
-                                    fontWeight: 750,
-                                    fontSize: { xs: "0.66rem", md: "0.74rem" },
-                                    letterSpacing: "0.04em",
-                                    textTransform: "uppercase",
-                                    whiteSpace: "nowrap",
-                                    "&:hover, &:focus-visible": { color: "text.primary", background: alpha(theme.palette.primary.main, 0.12) },
-                                }}
-                            >
-                                {section.title}
-                            </Button>
-                        ))}
-                    </Box>
-                </Box>
+                <StellarHeader
+                    sections={sections}               // [{ id: "hero", title: "Home" }, ...]
+                    onSectionSelect={onSectionSelect} // (index) => scroll/snap to that section
+                />
 
                 {/* ── Act 0 · your original hero ─────────────────────────────── */}
                 <Act sx={{ py: { xs: 12, md: 14 } }}>
@@ -656,9 +547,12 @@ export default function ScrollHero({ sections = [], onSectionSelect }) {
 
                 {/* ── Act 3 · call to action ─────────────────────────────────── */}
                 <Act sx={{ justifyContent: "center" }}>
-                    <Reveal y={40} sx={(t) => ({ ...glass(t), textAlign: "center" })}>
+                    {/* <Reveal y={40} sx={(t) => ({ ...glass(t), textAlign: "center" })}>
                         <TechCredibilityPanel />
-                    </Reveal>
+                    </Reveal> */}
+                    <Box sx={(t) => ({ ...glass(t), textAlign: "center" })}>
+                        <TechCredibilityPanel />
+                    </Box>
                 </Act>
             </Box>
         </Box>
